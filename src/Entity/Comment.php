@@ -2,13 +2,13 @@
 
 namespace App\Entity;
 
-use App\Repository\PostRepository;
+use App\Repository\CommentRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass=PostRepository::class)
+ * @ORM\Entity(repositoryClass=CommentRepository::class)
  */
-class Post
+class Comment
 {
     /**
      * @ORM\Id
@@ -20,22 +20,12 @@ class Post
     /**
      * @ORM\Column(type="integer")
      */
-    private $post_id;
-
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $title;
+    private $com_id;
 
     /**
      * @ORM\Column(type="text")
      */
     private $content;
-
-    /**
-     * @ORM\Column(type="boolean")
-     */
-    private $status;
 
     /**
      * @ORM\Column(type="integer")
@@ -45,7 +35,7 @@ class Post
     /**
      * @ORM\Column(type="integer")
      */
-    private $image_id;
+    private $post_id;
 
     /**
      * @ORM\Column(type="date")
@@ -55,38 +45,26 @@ class Post
     /**
      * @ORM\Column(type="date", nullable=true)
      */
-    private $edition_date;
+    private $edtion_date;
 
     /**
      * @ORM\Column(type="integer")
      */
-    private $img_id;
+    private $status;
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getPostId(): ?int
+    public function getComId(): ?int
     {
-        return $this->post_id;
+        return $this->com_id;
     }
 
-    public function setPostId(int $post_id): self
+    public function setComId(int $com_id): self
     {
-        $this->post_id = $post_id;
-
-        return $this;
-    }
-
-    public function getTitle(): ?string
-    {
-        return $this->title;
-    }
-
-    public function setTitle(string $title): self
-    {
-        $this->title = $title;
+        $this->com_id = $com_id;
 
         return $this;
     }
@@ -103,18 +81,6 @@ class Post
         return $this;
     }
 
-    public function getStatus(): ?bool
-    {
-        return $this->status;
-    }
-
-    public function setStatus(bool $status): self
-    {
-        $this->status = $status;
-
-        return $this;
-    }
-
     public function getUserId(): ?int
     {
         return $this->user_id;
@@ -127,14 +93,14 @@ class Post
         return $this;
     }
 
-    public function getImageId(): ?int
+    public function getPostId(): ?int
     {
-        return $this->image_id;
+        return $this->post_id;
     }
 
-    public function setImageId(int $image_id): self
+    public function setPostId(int $post_id): self
     {
-        $this->image_id = $image_id;
+        $this->post_id = $post_id;
 
         return $this;
     }
@@ -151,26 +117,26 @@ class Post
         return $this;
     }
 
-    public function getEditionDate(): ?\DateTimeInterface
+    public function getEdtionDate(): ?\DateTimeInterface
     {
-        return $this->edition_date;
+        return $this->edtion_date;
     }
 
-    public function setEditionDate(?\DateTimeInterface $edition_date): self
+    public function setEdtionDate(?\DateTimeInterface $edtion_date): self
     {
-        $this->edition_date = $edition_date;
+        $this->edtion_date = $edtion_date;
 
         return $this;
     }
 
-    public function getImgId(): ?int
+    public function getStatus(): ?int
     {
-        return $this->img_id;
+        return $this->status;
     }
 
-    public function setImgId(int $img_id): self
+    public function setStatus(int $status): self
     {
-        $this->img_id = $img_id;
+        $this->status = $status;
 
         return $this;
     }
