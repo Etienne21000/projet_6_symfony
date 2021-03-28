@@ -2,14 +2,13 @@
 
 namespace App\Entity;
 
-use App\Repository\UserRepository;
+use App\Repository\VideoRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass=UserRepository::class)
- * @ORM\Table(name="`user`")
+ * @ORM\Entity(repositoryClass=VideoRepository::class)
  */
-class User
+class Video
 {
     /**
      * @ORM\Id
@@ -19,19 +18,9 @@ class User
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=150)
+     * @ORM\Column(type="text")
      */
-    private $name;
-
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $email;
-
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $pass;
+    private $link;
 
     /**
      * @ORM\Column(type="date")
@@ -46,45 +35,21 @@ class User
     /**
      * @ORM\Column(type="integer")
      */
-    private $role;
+    private $post_id;
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getName(): ?string
+    public function getLink(): ?string
     {
-        return $this->name;
+        return $this->link;
     }
 
-    public function setName(string $name): self
+    public function setLink(string $link): self
     {
-        $this->name = $name;
-
-        return $this;
-    }
-
-    public function getEmail(): ?string
-    {
-        return $this->email;
-    }
-
-    public function setEmail(string $email): self
-    {
-        $this->email = $email;
-
-        return $this;
-    }
-
-    public function getPass(): ?string
-    {
-        return $this->pass;
-    }
-
-    public function setPass(string $pass): self
-    {
-        $this->pass = $pass;
+        $this->link = $link;
 
         return $this;
     }
@@ -113,14 +78,14 @@ class User
         return $this;
     }
 
-    public function getRole(): ?int
+    public function getPostId(): ?int
     {
-        return $this->role;
+        return $this->post_id;
     }
 
-    public function setRole(int $role): self
+    public function setPostId(int $post_id): self
     {
-        $this->role = $role;
+        $this->post_id = $post_id;
 
         return $this;
     }

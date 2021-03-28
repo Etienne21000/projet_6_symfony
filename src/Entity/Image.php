@@ -18,11 +18,6 @@ class Image
     private $id;
 
     /**
-     * @ORM\Column(type="integer")
-     */
-    private $img_id;
-
-    /**
      * @ORM\Column(type="string", length=150)
      */
     private $title;
@@ -47,21 +42,14 @@ class Image
      */
     private $edition_date;
 
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $status;
+
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function getImgId(): ?int
-    {
-        return $this->img_id;
-    }
-
-    public function setImgId(int $img_id): self
-    {
-        $this->img_id = $img_id;
-
-        return $this;
     }
 
     public function getTitle(): ?string
@@ -120,6 +108,18 @@ class Image
     public function setEditionDate(?\DateTimeInterface $edition_date): self
     {
         $this->edition_date = $edition_date;
+
+        return $this;
+    }
+
+    public function getStatus(): ?bool
+    {
+        return $this->status;
+    }
+
+    public function setStatus(bool $status): self
+    {
+        $this->status = $status;
 
         return $this;
     }

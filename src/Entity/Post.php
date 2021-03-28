@@ -18,11 +18,6 @@ class Post
     private $id;
 
     /**
-     * @ORM\Column(type="integer")
-     */
-    private $post_id;
-
-    /**
      * @ORM\Column(type="string", length=255)
      */
     private $title;
@@ -39,11 +34,15 @@ class Post
 
     /**
      * @ORM\Column(type="integer")
+     * @ORM\OneToMany(targetEntity="User")
+     * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
      */
     private $user_id;
 
     /**
      * @ORM\Column(type="integer")
+     * @ORM\OneToOne(targetEntity="Image")
+     * @ORM\JoinColumn(name="image_id", referencedColumnName="id")
      */
     private $image_id;
 
@@ -58,25 +57,18 @@ class Post
     private $edition_date;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="boolean")
      */
-    private $img_id;
+    private $video;
+
+    /**
+     * @ORM\Column(type="string", length=100)
+     */
+    private $category;
 
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function getPostId(): ?int
-    {
-        return $this->post_id;
-    }
-
-    public function setPostId(int $post_id): self
-    {
-        $this->post_id = $post_id;
-
-        return $this;
     }
 
     public function getTitle(): ?string
@@ -163,14 +155,26 @@ class Post
         return $this;
     }
 
-    public function getImgId(): ?int
+    public function getVideo(): ?bool
     {
-        return $this->img_id;
+        return $this->video;
     }
 
-    public function setImgId(int $img_id): self
+    public function setVideo(bool $video): self
     {
-        $this->img_id = $img_id;
+        $this->video = $video;
+
+        return $this;
+    }
+
+    public function getCategory(): ?string
+    {
+        return $this->category;
+    }
+
+    public function setCategory(string $category): self
+    {
+        $this->category = $category;
 
         return $this;
     }

@@ -18,11 +18,6 @@ class Comment
     private $id;
 
     /**
-     * @ORM\Column(type="integer")
-     */
-    private $com_id;
-
-    /**
      * @ORM\Column(type="text")
      */
     private $content;
@@ -55,18 +50,6 @@ class Comment
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function getComId(): ?int
-    {
-        return $this->com_id;
-    }
-
-    public function setComId(int $com_id): self
-    {
-        $this->com_id = $com_id;
-
-        return $this;
     }
 
     public function getContent(): ?string
