@@ -1,3 +1,78 @@
-.navbar-brand{
-  color: red;
+body{
+
+  .main_header {
+    height: 100vh;
+    .title-home{
+      width: 100%;
+      height: inherit;
+      content: "";
+      position: absolute;
+      z-index: 10;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      .wrapper-title{
+        width: 400px;
+        margin: 0 auto 0 auto;
+        height: 110px;
+        color: #ffffff;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        border: 2px solid #ffffff;
+        border-radius: 30px;
+      }
+    }
+    .header-filter{
+      height: inherit;
+      position: relative;
+      .filter{
+        height: inherit;
+        width: 100%;
+        content: "";
+        background-color: rgba(0,0,0,0.3);
+        position: absolute;
+      }
+      .header_img {
+        height: inherit;
+        width: auto;
+        object-fit: contain;
+      }
+      .title-home{
+        width: 400px;
+        margin: 0 auto 0 auto;
+        height: 110px;
+        position: absolute;
+        color: #ffffff;
+        z-index: 10;
+        top: 50%;
+        left: 30%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        border: 2px solid #ffffff;
+        border-radius: 30px;
+      }
+    }
+    .arrow-down{
+      position: absolute;
+      top: 92%;
+      right: 20px;
+      a {
+        color: #ffffff;
+        .fa-arrow-down{
+          font-size: 25px;
+          border: 2px solid #ffffff;
+          border-radius: 20px;
+          padding: 5px 6px;
+        }
+        &:hover{
+          cursor: pointer;
+          transform: scale(1.1);
+        }
+      }
+    }
+  }
 }

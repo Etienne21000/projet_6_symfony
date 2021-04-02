@@ -1,21 +1,46 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello MainController!{% endblock %}
+{% block title %}Bienvenu sur le site Snowtricks{% endblock %}
+
+{% block header %}
+    <div class="title-home">
+        <div class="wrapper-title">
+            <h1>{{ title }}</h1>
+            <p>{{ sub }}</p>
+        </div>
+    </div>
+    <div class="header-filter">
+        <div class="filter"></div>
+        <img src="upload/home_snow.jpeg" alt="img_header" class="header_img">
+    </div>
+    <div class="arrow-down">
+        <a href="#tricks"><i class="fas fa-arrow-down"></i></a>
+    </div>
+{% endblock %}
 
 {% block content %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
-
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
-    <p>Salut la compagnie !</p>
-
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code><a href="{{ '/Users/etienne/Desktop/opencr/DA_php_Symfony/Projets/P6_juffard_etienne/www/src/Controller/MainController.php'|file_link(0) }}">src/Controller/MainController.php</a></code></li>
-        <li>Your template at <code><a href="{{ '/Users/etienne/Desktop/opencr/DA_php_Symfony/Projets/P6_juffard_etienne/www/templates/main/index.html.twig'|file_link(0) }}">templates/main/index.html.twig</a></code></li>
-    </ul>
-</div>
+<section class="container">
+    <article class="wrapper">
+        <div class="row" id="tricks">
+            <div class="tricks">
+                <p>trick name</p>
+            </div>
+            <div class="tricks">
+                <p>trick name</p>
+            </div>
+            <div class="tricks">
+                <p>trick name</p>
+            </div>
+            <div class="tricks">
+                <p>trick name</p>
+            </div>
+            <div class="tricks">
+                <p>trick name</p>
+            </div>
+            <div class="tricks">
+                <p>trick name</p>
+            </div>
+        </div>
+    </article>
+</section>
 {% endblock %}

@@ -2,13 +2,13 @@
 
 namespace App\Entity;
 
-use App\Repository\VideoRepository;
+use App\Repository\MediaRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass=VideoRepository::class)
+ * @ORM\Entity(repositoryClass=MediaRepository::class)
  */
-class Video
+class Media
 {
     /**
      * @ORM\Id
@@ -18,9 +18,9 @@ class Video
     private $id;
 
     /**
-     * @ORM\Column(type="text")
+     * @ORM\Column(type="string", length=150)
      */
-    private $link;
+    private $title;
 
     /**
      * @ORM\Column(type="date")
@@ -33,6 +33,11 @@ class Video
     private $edition_date;
 
     /**
+     * @ORM\Column(type="text")
+     */
+    private $link;
+
+    /**
      * @ORM\Column(type="integer")
      */
     private $post_id;
@@ -42,14 +47,14 @@ class Video
         return $this->id;
     }
 
-    public function getLink(): ?string
+    public function getTitle(): ?string
     {
-        return $this->link;
+        return $this->title;
     }
 
-    public function setLink(string $link): self
+    public function setTitle(string $title): self
     {
-        $this->link = $link;
+        $this->title = $title;
 
         return $this;
     }
@@ -74,6 +79,18 @@ class Video
     public function setEditionDate(?\DateTimeInterface $edition_date): self
     {
         $this->edition_date = $edition_date;
+
+        return $this;
+    }
+
+    public function getLink(): ?string
+    {
+        return $this->link;
+    }
+
+    public function setLink(string $link): self
+    {
+        $this->link = $link;
 
         return $this;
     }
