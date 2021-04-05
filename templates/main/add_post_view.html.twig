@@ -1,0 +1,56 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Bienvenu sur le site Snowtricks{% endblock %}
+
+{% block header %}
+    <header class="sub_header">
+        <div class="title">
+            <div class="wrapper">
+                <h1>{{ title }}</h1>
+                <p>{{ sub }}</p>
+            </div>
+        </div>
+    </header>
+
+{% endblock %}
+
+{% block content %}
+
+    <section class="container">
+        <form>
+            {{ form_start(form) }}
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-md-6">{{ form_row(form.title) }}</div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">{{ form_row(form.content) }}</div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">{{ form_row(form.status) }}</div>
+                </div>
+                <div class="row">
+                    {{ form_row(form.user_id) }}
+                </div>
+                <div class="row">
+                    <div class="col-md-6">{{ form_row(form.image_id) }}</div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">{{ form_row(form.Category) }}</div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                    <div>
+                        <button type="submit" class="btn btn-primary">Enregistrer</button>
+                    </div>
+                    </div>
+                </div>
+
+            </div>
+
+            {{ form_end(form) }}
+
+        </form>
+    </section>
+
+{% endblock %}

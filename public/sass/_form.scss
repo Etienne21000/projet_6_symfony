@@ -1,0 +1,13 @@
+.form-group{
+  .row{
+    align-items: center;
+    justify-content: center;
+    .col-md-6{
+      div{
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 20px;
+      }
+    }
+  }
+}
