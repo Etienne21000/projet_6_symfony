@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\PostRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=PostRepository::class)
@@ -19,16 +20,20 @@ class Post
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\Length(min = 2, minMessage = "Attention, le titre doit contenir au moins 2 caractères")
+     * @Assert\NotBlank(message = "Attention, vous devez ajouter un titre")
      */
     private $title;
 
     /**
      * @ORM\Column(type="text")
+     * @Assert\NotBlank(message = "Attention, le contenu est vide")
      */
     private $content;
 
     /**
      * @ORM\Column(type="boolean")
+     * @Assert\IsNull(message = "Attention, vous devez choisir un status")
      */
     private $status;
 

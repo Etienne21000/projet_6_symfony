@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Ajouter une figure{% endblock %}
+{% block title %}Créer un compte utilisateur{% endblock %}
 
 {% block header %}
     <header class="sub_header">
@@ -21,28 +21,25 @@
             {{ form_start(form, {'attr': {'novalidate': 'novalidate' }}) }}
             <div class="form-group">
                 <div class="row">
-                    <div class="col-md-6">{{ form_row(form.title) }}</div>
+                    <div class="col-md-6">{{ form_row(form.name) }}</div>
                 </div>
                 <div class="row">
-                    <div class="col-md-6">{{ form_row(form.content) }}</div>
+                    <div class="col-md-6">{{ form_row(form.email) }}</div>
                 </div>
                 <div class="row">
-                    <div class="col-md-6">{{ form_row(form.status) }}</div>
+                    <div class="col-md-6">{{ form_row(form.validate_email) }}</div>
                 </div>
                 <div class="row">
-                    {{ form_row(form.user_id) }}
+                    <div class="col-md-6">{{ form_row(form.pass) }}</div>
                 </div>
                 <div class="row">
-                    <div class="col-md-6">{{ form_row(form.image_id) }}</div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6">{{ form_row(form.Category) }}</div>
+                    <div class="col-md-6">{{ form_row(form.validate_pass) }}</div>
                 </div>
                 <div class="row">
                     <div class="col-md-6">
-                    <div>
-                        <button type="submit" class="btn btn-primary">Enregistrer</button>
-                    </div>
+                        <div>
+                            <button type="submit" class="btn btn-primary">Créer mon compte</button>
+                        </div>
                     </div>
                 </div>
 
