@@ -17,11 +17,15 @@
 {% block content %}
 
     <section class="container">
-        <form>
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success">
+                {{ message }}
+            </div>
+        {% endfor %}
             {{ form_start(form, {'attr': {'novalidate': 'novalidate' }}) }}
             <div class="form-group">
                 <div class="row">
-                    <div class="col-md-6">{{ form_row(form.name) }}</div>
+                    <div class="col-md-6">{{ form_row(form.username) }}</div>
                 </div>
                 <div class="row">
                     <div class="col-md-6">{{ form_row(form.email) }}</div>
@@ -30,10 +34,10 @@
                     <div class="col-md-6">{{ form_row(form.validate_email) }}</div>
                 </div>
                 <div class="row">
-                    <div class="col-md-6">{{ form_row(form.pass) }}</div>
+                    <div class="col-md-6">{{ form_row(form.plainPassword.first) }}</div>
                 </div>
                 <div class="row">
-                    <div class="col-md-6">{{ form_row(form.validate_pass) }}</div>
+                    <div class="col-md-6">{{ form_row(form.plainPassword.second) }}</div>
                 </div>
                 <div class="row">
                     <div class="col-md-6">
@@ -42,12 +46,10 @@
                         </div>
                     </div>
                 </div>
-
             </div>
 
             {{ form_end(form) }}
 
-        </form>
     </section>
 
 {% endblock %}

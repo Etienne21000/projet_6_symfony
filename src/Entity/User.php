@@ -4,12 +4,17 @@ namespace App\Entity;
 
 use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
  * @ORM\Table(name="`user`")
+ * @UniqueEntity(fields={"email"}, message = "Cette adresse mail est déjà liée à un compte")
+ * @UniqueEntity(fields={"username"}, message="Désolé, ce pseudo existe déjà")
  */
-class User
+class User implements UserInterface
 {
     /**
      * @ORM\Id
@@ -20,18 +25,21 @@ class User
 
     /**
      * @ORM\Column(type="string", length=150)
+     * @Assert\Length(min = 2, minMessage="Attention, votre pseudo est trop court")
+     * @Assert\NotBlank(message = "Attention, vous devez ajouter un pseudo")
      */
-    private $name;
+    private $username;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank(message = "Attention, vous devez ajouter votre email")
      */
     private $email;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=64)
      */
-    private $pass;
+    private $password;
 
     /**
      * @ORM\Column(type="date")
@@ -44,23 +52,34 @@ class User
     private $edition_date;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="array")
      */
-    private $role;
+    private $roles;
+
+    /**
+     * @Assert\NotBlank(message = "Attention, vous devez ajouter un mot de passe")
+     * @Assert\Length(max=4096)
+     */
+    private $plainPassword;
+
+    public function __construct()
+    {
+        $this->roles = array('ROLE_USER');
+    }
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getName(): ?string
+    public function getUsername(): ?string
     {
-        return $this->name;
+        return $this->username;
     }
 
-    public function setName(string $name): self
+    public function setUsername(string $username): self
     {
-        $this->name = $name;
+        $this->username = $username;
 
         return $this;
     }
@@ -77,14 +96,14 @@ class User
         return $this;
     }
 
-    public function getPass(): ?string
+    public function getPassword()
     {
-        return $this->pass;
+        return $this->password;
     }
 
-    public function setPass(string $pass): self
+    public function setPassword($password)
     {
-        $this->pass = $pass;
+        $this->password = $password;
 
         return $this;
     }
@@ -113,15 +132,43 @@ class User
         return $this;
     }
 
-    public function getRole(): ?int
+    public function getRoles()
     {
-        return $this->role;
+        return $this->roles;
     }
 
-    public function setRole(int $role): self
+    public function setRoles($roles)
     {
-        $this->role = $role;
+        $this->roles = $roles;
 
         return $this;
+    }
+
+    public function getPlainPassword(): ?string
+    {
+        return $this->plainPassword;
+    }
+
+    public function setPlainPassword($pass): self
+    {
+        $this->plainPassword = $pass;
+
+        return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getSalt()
+    {
+        // TODO: Implement getSalt() method.
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function eraseCredentials()
+    {
+        // TODO: Implement eraseCredentials() method.
     }
 }
