@@ -53,10 +53,11 @@ class UserController extends AbstractController
 
         $title = 'Créer un compte utilisateur';
         $sub = 'Votre compte vous permettra de contribuer à la création d\'articles';
+        $param = 'create';
 
         $user = new User();
         $user->setCreationDate(new \DateTime('now'));
-        $user->setRoles(0);
+        $user->setRoles('ROLE_ADMIN');
 
         $form = $this->createForm(UserType::class, $user);
         $form->handleRequest($request);
@@ -74,6 +75,7 @@ class UserController extends AbstractController
             'title' => $title,
             'sub' => $sub,
             'user' => $user,
+            'param' => $param,
             'form' => $form->createView(),
         ]);
     }
@@ -81,15 +83,35 @@ class UserController extends AbstractController
     /**
      * @param Request $request
      * @Route("/connectUser", name="connectUser")
+     * @return Response
+     * @throws Exception
      */
     public function connectUser(Request $request){
         $title = 'Connection espace utilisateur';
         $sub = 'Connectez vous à votre espace utilisateur';
+        $param = 'connect';
+
+        $user = new User();
+        $user->setEditionDate(new \DateTime('now'));
+
+        $form = $this->createForm(UserType::class, $user);
+        $form->handleRequest($request);
 
         $user = new User();
         $form = $this->createForm(UserType::class, $user);
         $form->handleRequest($request);
 
+        if($form->isSubmitted() && $form->isValid()){
+
+        }
+
+        return $this->render('main/add_user_view.html.twig', [
+            'title' => $title,
+            'sub' => $sub,
+            'user' => $user,
+            'param' => $param,
+            'form' => $form->createView(),
+        ]);
     }
 
 }

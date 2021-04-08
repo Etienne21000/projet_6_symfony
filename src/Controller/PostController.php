@@ -61,18 +61,6 @@ class PostController extends AbstractController
 
         $post = new Post();
         $post->setCreationDate(new \DateTime('now'));
-        $validator = Validation::createValidator();
-
-        $errors = $validator->validate($post, [
-            new length(['min' => 2]),
-            new NotBlank(),
-        ]);
-
-        if(0 !== count($errors)){
-            foreach ($errors as $error){
-                //echo $error->getMessage().'<br>';
-            }
-        }
 
         $form = $this->createForm(PostType::class, $post);
 
