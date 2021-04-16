@@ -25,24 +25,12 @@
             <section class="container-tricks">
                 <article class="wrapper-tricks">
                     <div class="row" id="tricks">
+                        {% for p in post %}
                         <div class="tricks">
-                            <p>trick name</p>
+                            <p>{{ p.title }}</p>
+                            <p>{{ p.content }}</p>
                         </div>
-                        <div class="tricks">
-                            <p>trick name</p>
-                        </div>
-                        <div class="tricks">
-                            <p>trick name</p>
-                        </div>
-                        <div class="tricks">
-                            <p>trick name</p>
-                        </div>
-                        <div class="tricks">
-                            <p>trick name</p>
-                        </div>
-                        <div class="tricks">
-                            <p>trick name</p>
-                        </div>
+                        {% endfor %}
                     </div>
                 </article>
             </section>

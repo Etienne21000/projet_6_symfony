@@ -9,10 +9,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Form\PostType;
 use App\Entity\Post;
-use Symfony\Component\Validator\Constraints\Length;
-use Symfony\Component\Validator\Constraints\NotBlank;
-use Symfony\Component\Validator\Validation;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 use App\Repository\PostRepository;
 
 
@@ -61,6 +57,7 @@ class PostController extends AbstractController
 
         $post = new Post();
         $post->setCreationDate(new \DateTime('now'));
+        $post->setUserId($this->getUser()->getId());
 
         $form = $this->createForm(PostType::class, $post);
 
@@ -70,8 +67,7 @@ class PostController extends AbstractController
             $this->manager->persist($post);
             $this->manager->flush();
             $this->addFlash('success', 'La figure à bien été ajoutée');
-            return $this->redirectToRoute('/');
-            //dump($post);
+            return $this->redirectToRoute('home');
         }
 
         return $this->render('main/add_post_view.html.twig', [
@@ -80,4 +76,12 @@ class PostController extends AbstractController
             'form' => $form->createView(),
         ]);
     }
+
+    /*public function get_tricks(){
+        //$this->repository->findAll();
+        $this->getDoctrine()->getRepository(Post::class);
+        $post = $this->repository->findAll();
+
+        return $this->render('')
+    }*/
 }

@@ -32,8 +32,7 @@ class Post
     private $content;
 
     /**
-     * @ORM\Column(type="boolean")
-     * @Assert\IsNull(message = "Attention, vous devez choisir un status")
+     * @ORM\Column(type="integer")
      */
     private $status;
 
@@ -45,13 +44,6 @@ class Post
     private $user_id;
 
     /**
-     * @ORM\Column(type="integer")
-     * @ORM\OneToOne(targetEntity="Image")
-     * @ORM\JoinColumn(name="image_id", referencedColumnName="id")
-     */
-    private $image_id;
-
-    /**
      * @ORM\Column(type="date")
      */
     private $creation_date;
@@ -60,11 +52,6 @@ class Post
      * @ORM\Column(type="date", nullable=true)
      */
     private $edition_date;
-
-    /**
-     * @ORM\Column(type="boolean")
-     */
-    private $video;
 
     /**
      * @ORM\Column(type="string", length=100)
@@ -100,12 +87,12 @@ class Post
         return $this;
     }
 
-    public function getStatus(): ?bool
+    public function getStatus(): ?int
     {
         return $this->status;
     }
 
-    public function setStatus(bool $status): self
+    public function setStatus(int $status): self
     {
         $this->status = $status;
 
@@ -120,18 +107,6 @@ class Post
     public function setUserId(int $user_id): self
     {
         $this->user_id = $user_id;
-
-        return $this;
-    }
-
-    public function getImageId(): ?int
-    {
-        return $this->image_id;
-    }
-
-    public function setImageId(int $image_id): self
-    {
-        $this->image_id = $image_id;
 
         return $this;
     }
@@ -156,18 +131,6 @@ class Post
     public function setEditionDate(?\DateTimeInterface $edition_date): self
     {
         $this->edition_date = $edition_date;
-
-        return $this;
-    }
-
-    public function getVideo(): ?bool
-    {
-        return $this->video;
-    }
-
-    public function setVideo(bool $video): self
-    {
-        $this->video = $video;
 
         return $this;
     }
