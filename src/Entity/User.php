@@ -54,7 +54,7 @@ class User implements UserInterface
     /**
      * @ORM\Column(type="array")
      */
-    private $roles;
+    private $roles = [];
 
     /**
      * @Assert\NotBlank(message = "Attention, vous devez ajouter un mot de passe")
@@ -96,16 +96,14 @@ class User implements UserInterface
         return $this;
     }
 
-    public function getPassword()
+    public function getPassword(): string
     {
         return $this->password;
     }
 
-    public function setPassword($password)
+    public function setPassword(string $password): void
     {
         $this->password = $password;
-
-        return $this;
     }
 
     public function getCreationDate(): ?\DateTimeInterface
@@ -132,16 +130,18 @@ class User implements UserInterface
         return $this;
     }
 
-    public function getRoles()
+    public function getRoles(): array
     {
-        return $this->roles;
+        if (empty($roles)) {
+            $roles[] = 'ROLE_USER';
+        }
+
+        return array_unique($roles);
     }
 
-    public function setRoles($roles)
+    public function setRoles(array $roles): void
     {
         $this->roles = $roles;
-
-        return $this;
     }
 
     public function getPlainPassword(): ?string
@@ -149,9 +149,9 @@ class User implements UserInterface
         return $this->plainPassword;
     }
 
-    public function setPlainPassword($pass): self
+    public function setPlainPassword($password): self
     {
-        $this->plainPassword = $pass;
+        $this->plainPassword = $password;
 
         return $this;
     }
@@ -161,14 +161,14 @@ class User implements UserInterface
      */
     public function getSalt()
     {
-        // TODO: Implement getSalt() method.
+        return null;
     }
 
     /**
      * @inheritDoc
      */
-    public function eraseCredentials()
+    public function eraseCredentials(): void
     {
-        // TODO: Implement eraseCredentials() method.
+
     }
 }

@@ -30,12 +30,21 @@
                 <li class="nav-item">
                     <a class="nav-link" href="#">Figures</a>
                 </li>
+                {% if(app.user == null) %}
                 <li class="nav-item">
                     <a class="nav-link" href="/addUser">Inscription</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="/login">Connexion</a>
                 </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="">{{ app.user.username }}</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/logout">Deconnexion</a>
+                        </li>
+                {% endif %}
             </ul>
         </div>
     </nav>

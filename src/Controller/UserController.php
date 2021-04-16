@@ -79,39 +79,4 @@ class UserController extends AbstractController
             'form' => $form->createView(),
         ]);
     }
-
-    /**
-     * @param Request $request
-     * @Route("/connectUser", name="connectUser")
-     * @return Response
-     * @throws Exception
-     */
-    public function connectUser(Request $request){
-        $title = 'Connection espace utilisateur';
-        $sub = 'Connectez vous à votre espace utilisateur';
-        $param = 'connect';
-
-        $user = new User();
-        $user->setEditionDate(new \DateTime('now'));
-
-        $form = $this->createForm(UserType::class, $user);
-        $form->handleRequest($request);
-
-        $user = new User();
-        $form = $this->createForm(UserType::class, $user);
-        $form->handleRequest($request);
-
-        if($form->isSubmitted() && $form->isValid()){
-
-        }
-
-        return $this->render('main/add_user_view.html.twig', [
-            'title' => $title,
-            'sub' => $sub,
-            'user' => $user,
-            'param' => $param,
-            'form' => $form->createView(),
-        ]);
-    }
-
 }
