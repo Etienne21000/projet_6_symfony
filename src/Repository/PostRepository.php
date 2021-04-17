@@ -19,6 +19,10 @@ class PostRepository extends ServiceEntityRepository
         parent::__construct($registry, Post::class);
     }
 
+    /*public function get_figures(){
+
+    }*/
+
 //    public function findAll(){
 //
 //    }
