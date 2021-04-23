@@ -10,4 +10,17 @@
       }
     }
   }
+  .media_btn{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    width: 50%;
+    margin: 40px auto 55px auto;
+  }
+  .select_media{
+    display: none;
+    visibility: hidden;
+    transition: visibility 0.3s;
+  }
 }

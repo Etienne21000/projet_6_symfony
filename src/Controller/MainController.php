@@ -8,21 +8,18 @@ use App\Entity\Ressource;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use App\Repository\PostRepository;
-use App\Repository\MediaRepository;
-use App\Repository\RessourceRepository;
 
 class MainController extends AbstractController
 {
-    private $Postrepository;
-    private $MediaRepository;
-    private $RessourceRepository;
+//    private $Postrepository;
+//    private $MediaRepository;
+//    private $RessourceRepository;
 
-    public function __construct(PostRepository $Postrepository, MediaRepository $mediaRepository, RessourceRepository $ressourceRepository)
+    public function __construct()
     {
-        $this->Postrepository = $Postrepository;
-        $this->MediaRepository = $mediaRepository;
-        $this->RessourceRepository = $ressourceRepository;
+//        $this->Postrepository = $this->getDoctrine()->getRepository(Post::class);
+//        $this->MediaRepository = $this->getDoctrine()->getRepository(Media::class);
+//        $this->RessourceRepository = $this->getDoctrine()->getRepository(Ressource::class);
     }
 
     /**
@@ -31,12 +28,13 @@ class MainController extends AbstractController
      */
     public function index(): Response
     {
-        $this->getDoctrine()->getRepository(Post::class);
-        $this->getDoctrine()->getRepository(Media::class);
-
-        $post = $this->Postrepository->findBy([
+        $postRepository = $this->getDoctrine()->getRepository(Post::class);
+        $post = $postRepository->findBy([
             'status' => 1
         ]);
+        /*$media = $this->MediaRepository->findBy([
+            'post_id' => $Post->getId(),
+        ]);*/
 
         // Add other repositories requestes to find Media and ressource type
         $title = 'SnowTricks';

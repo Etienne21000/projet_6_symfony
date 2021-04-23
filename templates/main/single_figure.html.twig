@@ -1,0 +1,33 @@
+{% extends 'base.html.twig' %}
+
+{% block title %} Le {{ post.title }} {% endblock %}
+
+{% block header %}
+    <header class="main_header">
+        <div class="title-home">
+            <div class="wrapper-title">
+                <h1>Le {{ title }}</h1>
+                <p>Catergorie : {{ sub }}</p>
+            </div>
+        </div>
+        <div class="header-filter">
+            <div class="filter"></div>
+            <img src="/upload/mute.jpeg" alt="img_header" class="header_img">
+        </div>
+    </header>
+
+{% endblock %}
+
+        {% block content %}
+            <section class="container">
+                <article class="wrapper">
+                    <div class="row">
+                            <div class="tricks">
+                                <p>{{ post.title }}</p>
+                                <p>{{ post.content }}</p>
+{#                                <p>{{ post.creation_date }}</p>#}
+                            </div>
+                    </div>
+                </article>
+            </section>
+        {% endblock %}

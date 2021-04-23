@@ -28,7 +28,8 @@
                         {% for p in post %}
                         <div class="tricks">
                             <p>{{ p.title }}</p>
-                            <p>{{ p.content }}</p>
+                            <p>{{ p.content | slice(0, 100) }}</p>
+                            <a href="/figure/{{ p.id }}">Voir la figure</a>
                         </div>
                         {% endfor %}
                     </div>

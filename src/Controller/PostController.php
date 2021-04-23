@@ -2,6 +2,9 @@
 
 namespace App\Controller;
 
+use App\Entity\FigureRequest;
+use App\Entity\Media;
+use App\Entity\Ressource;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -10,6 +13,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use App\Form\PostType;
 use App\Entity\Post;
 use App\Repository\PostRepository;
+use App\Service\ImageUploader;
 
 
 class PostController extends AbstractController
@@ -47,25 +51,61 @@ class PostController extends AbstractController
 
     /**
      * @param Request $request
+     * @param ImageUploader $imageUploader
      * @return Response
      * @throws \Exception
      * @Route("/addPost", name="addPost")
      */
-    public function addPost(Request $request){
+    public function addPost(Request $request, ImageUploader $imageUploader){
         $title = 'Ajouter une nouvelle figure';
         $sub = 'Ajouter un trick en choisissant sa catégorie';
 
+        $figure = new FigureRequest();
+
         $post = new Post();
+        $media = new Media();
+        $ressource = new Ressource();
+
         $post->setCreationDate(new \DateTime('now'));
+        $media->setCreationDate(new \DateTime('now'));
+
         $post->setUserId($this->getUser()->getId());
 
-        $form = $this->createForm(PostType::class, $post);
-
+        $form = $this->createForm(PostType::class, $figure);
         $form->handleRequest($request);
 
         if($form->isSubmitted() && $form->isValid()){
+
+            $imageFile = $form->get('image')->getData();
+
+            $post
+                ->setTitle($figure->figureTitle)
+                ->setContent($figure->figureContent)
+                ->setStatus($figure->figureStatus)
+                ->setCategory($figure->figureCategory);
+
             $this->manager->persist($post);
             $this->manager->flush();
+
+            $media
+                ->setPostId($post->getId());
+
+            if($imageFile){
+                $fileName = $imageUploader->upload($imageFile);
+                $media->setLink($fileName);
+            }
+
+            $this->manager->persist($media);
+            $this->manager->flush();
+
+            $ressource
+                ->setMediaId($media->getId())
+                ->setType($figure->resType)
+                ->setStatus($figure->resStatus);
+
+            $this->manager->persist($ressource);
+            $this->manager->flush();
+
             $this->addFlash('success', 'La figure à bien été ajoutée');
             return $this->redirectToRoute('home');
         }
@@ -84,4 +124,25 @@ class PostController extends AbstractController
 
         return $this->render('')
     }*/
+
+    /**
+     * @param $id
+     * @Route("/figure/{id}", name="single_figure")
+     * @return Response
+     */
+    public function get_one_figure(int $id): Response
+    {
+        $postRepository = $this->getDoctrine()->getRepository(Post::class);
+        $post = $postRepository->findOneBy([
+            'id' => $id,
+        ]);
+        $title = $post->getTitle();
+        $sub = $post->getCategory();
+
+        return $this->render('main/single_figure.html.twig', [
+            'title' => $title,
+            'sub' => $sub,
+            'post' => $post,
+        ]);
+    }
 }
