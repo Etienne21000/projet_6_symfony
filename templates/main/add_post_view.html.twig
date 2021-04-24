@@ -36,13 +36,14 @@
                 </div>
 
                 <div class="media_btn">
-                    <button type="button" class="btn btn-primary" id="img" value="img">Ajouter une image</button>
-                    <button type="button" class="btn btn-info" id="vid" value="vid">Ajouter une vidéo</button>
+                    <button type="button" class="btn btn-primary" id="img" value="img" data-value="img">Ajouter une image</button>
+                    <button type="button" class="btn btn-info" id="vid" value="vid" data-value="vid">Ajouter une vidéo</button>
                 </div>
 
                 <div class="select_media">
                     <h4 class="media_title"></h4>
                     <div class="media_fields">
+
                         <div class="col-md-6">{{ form_row(form.mediaLink) }}</div>
 
                         <div class="row">
@@ -55,10 +56,6 @@
 
                         <div class="row">
                             <div class="col-md-6">{{ form_row(form.resType) }}</div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6">{{ form_row(form.resStatus) }}</div>
                         </div>
                     </div>
                 </div>

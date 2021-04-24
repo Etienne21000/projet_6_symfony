@@ -7,6 +7,8 @@ document.addEventListener('DOMContentLoaded', function(){
 
     function display_img_form(){
         image.addEventListener('click', (e) => {
+            let img_val = image.dataset.value;
+            console.log(img_val);
             media_select.style.display = 'block';
             media_select.style.visibility = 'visible';
         });
@@ -14,6 +16,8 @@ document.addEventListener('DOMContentLoaded', function(){
 
     function display_vid_form(){
         video.addEventListener('click', (e) => {
+            let vid_val = video.dataset.value;
+            console.log(vid_val);
             media_select.style.display = 'block';
             media_select.style.visibility = 'visible';
         });

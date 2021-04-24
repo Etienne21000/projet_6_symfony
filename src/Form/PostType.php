@@ -63,13 +63,6 @@ class PostType extends AbstractType
                     'Image' => 1,
                     'Vidéo' => 0
                 ],
-            ])
-            ->add('resStatus', choiceType::class, [
-                'label' => 'Statut du média',
-                'choices' => [
-                    'Publier' => 1,
-                    'Brouillon' => 0
-                ]
             ]);
     }
 

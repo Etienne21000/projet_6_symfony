@@ -101,7 +101,7 @@ class PostController extends AbstractController
             $ressource
                 ->setMediaId($media->getId())
                 ->setType($figure->resType)
-                ->setStatus($figure->resStatus);
+                ->setStatus(1);
 
             $this->manager->persist($ressource);
             $this->manager->flush();
@@ -133,9 +133,19 @@ class PostController extends AbstractController
     public function get_one_figure(int $id): Response
     {
         $postRepository = $this->getDoctrine()->getRepository(Post::class);
+        $mediaRepository = $this->getDoctrine()->getRepository(Media::class);
+        $resRepository = $this->getDoctrine()->getRepository(Ressource::class);
+
+        $media = $mediaRepository->findBy([
+            'post_id' => $id,
+        ]);
+
         $post = $postRepository->findOneBy([
             'id' => $id,
         ]);
+
+        $media_dir = '../public/upload/';
+
         $title = $post->getTitle();
         $sub = $post->getCategory();
 
@@ -143,6 +153,8 @@ class PostController extends AbstractController
             'title' => $title,
             'sub' => $sub,
             'post' => $post,
+            'media' => $media,
+            'dir' => $media_dir
         ]);
     }
 }

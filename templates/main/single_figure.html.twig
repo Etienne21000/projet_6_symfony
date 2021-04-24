@@ -26,6 +26,10 @@
                                 <p>{{ post.title }}</p>
                                 <p>{{ post.content }}</p>
 {#                                <p>{{ post.creation_date }}</p>#}
+                                {% for m in media %}
+                                <img src="../public/upload/{{ m.link }}"/>
+                                    <img src="{{ asset("public/upload/#{ m.link }") }}"/>
+                                {% endfor %}
                             </div>
                     </div>
                 </article>
