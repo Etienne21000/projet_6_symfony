@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Media;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\DBAL\Exception;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -14,9 +15,50 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class MediaRepository extends ServiceEntityRepository
 {
+    private $manager;
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Media::class);
+    }
+
+    public function get_media(int $id):array
+    {
+        $manager = $this->getEntityManager()->getConnection();
+
+        $sql = 'SELECT m.*, r.*
+            FROM media AS m
+            INNER JOIN ressource AS r 
+            ON r.media_id = m.id
+            WHERE m.post_id = :id';
+
+        try {
+            $req = $manager->prepare($sql);
+        } catch (Exception $e) {
+            $e->getMessage();
+        }
+
+        $req->execute([':id' => $id]);
+
+        return $req->fetchAllAssociative();
+    }
+
+    public function get_status(int $id, $limit, $offset):array
+    {
+        $manager = $this->getEntityManager()->getConnection();
+
+        $sql = "SELECT m.*, r.*
+        FROM media AS m
+        LEFT JOIN ressource AS r 
+        ON r.media_id = m.id
+        WHERE m.post_id = :id
+        AND r.type = 1
+        LIMIT $limit, $offset";
+
+        $req = $manager->prepare($sql);
+
+        $req->execute([':id' => $id]);
+
+        return $req->fetchAllAssociative();
     }
 
     // /**

@@ -30,8 +30,9 @@ class MainController extends AbstractController
     {
         $postRepository = $this->getDoctrine()->getRepository(Post::class);
         $post = $postRepository->findBy([
-            'status' => 1
+            'status' => 1,
         ]);
+
         /*$media = $this->MediaRepository->findBy([
             'post_id' => $Post->getId(),
         ]);*/
@@ -39,6 +40,7 @@ class MainController extends AbstractController
         // Add other repositories requestes to find Media and ressource type
         $title = 'SnowTricks';
         $subtitle = 'Tricks de snowboard';
+
         return $this->render('main/index.html.twig', [
             'controller_name' => 'MainController',
             'title' => $title,

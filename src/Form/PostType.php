@@ -21,7 +21,9 @@ class PostType extends AbstractType
         parent::buildForm($builder, $options);
 
         $builder
-            ->add('figureTitle', textType::class, ['label' => 'Titre'])
+            ->add('figureTitle', textType::class, [
+                'label' => 'Titre',
+            ])
             ->add('figureContent', textAreaType::class, ['label' => 'Description'])
             ->add('figureStatus', choiceType:: class, [
                 'choices' => [
@@ -42,7 +44,7 @@ class PostType extends AbstractType
                     'Old school' => 'old'
                 ],
             ])
-            ->add('mediaLink', hiddenType::class)
+            ->add('mediaLink', textType::class)
             ->add('image', FileType::class, [
                 'label' => 'Importer une image',
                 'mapped' => false,
@@ -57,13 +59,7 @@ class PostType extends AbstractType
             ])
             ->add('mediaPostId', hiddenType::class)
             ->add('resMediaId', hiddenType::class)
-            ->add('resType', choiceType::class, [
-                'label' => 'Type de fichier',
-                'choices' => [
-                    'Image' => 1,
-                    'Vidéo' => 0
-                ],
-            ]);
+            ->add('resType', hiddenType::class);
     }
 
     public function configureOptions(OptionsResolver $resolver)

@@ -22,13 +22,21 @@
 {% endblock %}
 
         {% block content %}
+            {% for message in app.flashes('success') %}
+                <div class="alert alert-success">
+                    {{ message }}
+                </div>
+            {% endfor %}
+
             <section class="container-tricks">
                 <article class="wrapper-tricks">
+
                     <div class="row" id="tricks">
                         {% for p in post %}
                         <div class="tricks">
                             <p>{{ p.title }}</p>
                             <p>{{ p.content | slice(0, 100) }}</p>
+                            <p>{{ p.category }}</p>
                             <a href="/figure/{{ p.id }}">Voir la figure</a>
                         </div>
                         {% endfor %}

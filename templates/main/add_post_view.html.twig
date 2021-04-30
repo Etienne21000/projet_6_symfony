@@ -16,7 +16,118 @@
 
 {% block content %}
 
-    <section class="container">
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success">
+            {{ message }}
+        </div>
+    {% endfor %}
+
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Supprimer l'image</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="media_id" value="" class="input_id">
+                    <p class="title_m"></p>
+                    <img class="link_m" src="">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <form action="" method="post" class="delete_media">
+                        <input type="hidden" class="inp_media" value="" name="id">
+                        <input type="submit" class="btn btn-danger" value="Supprimer">
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if action == 'edit' %}
+        <section class="container">
+            {{ form_start(form, {'attr': {'novalidate': 'novalidate' }}) }}
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-md-6">{{ form_row(form.figureTitle, {'attr': {'value': post.title}}) }}</div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">{{ form_row(form.figureContent, {'value': post.content}) }}</div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">{{ form_row(form.figureCategory, {'label': post.category}) }}</div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">{{ form_row(form.figureStatus) }}</div>
+                </div>
+                <div class="row">
+                    {{ form_row(form.figureUserId) }}
+                </div>
+
+                <div class="media_btn">
+                    <button type="button" class="btn btn-primary" id="img" value="img" data-value="img">Ajouter une image</button>
+                    <button type="button" class="btn btn-info" id="vid" value="vid" data-value="vid">Ajouter une vidéo</button>
+                </div>
+
+                <div class="select_media">
+                    <h4 class="media_title"></h4>
+                    <div class="media_fields">
+
+                        <div class="row media">
+                            <div class="col-md-6 media">{{ form_row(form.mediaLink) }}</div>
+                        </div>
+                        <div class="row row-img">
+                            <div class="col-md-6">{{ form_row(form.image) }}</div>
+                        </div>
+
+                        <div class="col-md-6">{{ form_row(form.mediaPostId) }}</div>
+
+                        <div class="col-md-6">{{ form_row(form.resMediaId) }}</div>
+
+                        <div class="row">
+                            <div class="col-md-6">{{ form_row(form.resType) }}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="media-container">
+                    {% for m in medias %}
+                        {% if m.type == 1 %}
+                            <div class="media-img">
+                                <button type="button" data-toggle="modal" data-target="#exampleModal" data-id="{{ m.id }}" data-title="{{ m.link }}" class="btn modal-btn">
+                                    <i class="fas fa-times-circle"></i>
+                                </button>
+                                <img src="{{ asset('/upload/' ~  m.link ) }}"/>
+                            </div>
+                        {% elseif m.type == 2 %}
+                            <div class="media-vid">
+                                <button type="button" data-toggle="modal" data-target="#exampleModal" data-id="{{ m.id }}" data-title="{{ m.link }}" class="btn modal-btn">
+                                    <i class="fas fa-times-circle"></i>
+                                </button>
+                                <iframe width="200" height="120" src="{{ m.link }}"></iframe>
+                            </div>
+
+                        {% endif %}
+                    {% endfor %}
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div>
+                            <button type="submit" class="btn btn-primary">Enregistrer</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {{ form_end(form) }}
+        </section>
+
+    {% else %}
+
+        <section class="container">
             {{ form_start(form, {'attr': {'novalidate': 'novalidate' }}) }}
             <div class="form-group">
                 <div class="row">
@@ -62,16 +173,18 @@
 
                 <div class="row">
                     <div class="col-md-6">
-                    <div>
-                        <button type="submit" class="btn btn-primary">Enregistrer</button>
-                    </div>
+                        <div>
+                            <button type="submit" class="btn btn-primary">Enregistrer</button>
+                        </div>
                     </div>
                 </div>
 
             </div>
 
-        {{ form_end(form) }}
+            {{ form_end(form) }}
 
-    </section>
+        </section>
+
+    {% endif %}
 
 {% endblock %}

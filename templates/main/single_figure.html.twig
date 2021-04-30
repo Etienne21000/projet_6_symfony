@@ -12,26 +12,48 @@
         </div>
         <div class="header-filter">
             <div class="filter"></div>
-            <img src="/upload/mute.jpeg" alt="img_header" class="header_img">
+            {% for c in couv %}
+                {{ c.link }}
+                    <img src="{{ asset('/upload/' ~  c.link ) }}" class="header_img"/>
+            {% endfor %}
         </div>
     </header>
-
+    {{ dump(couv) }}
 {% endblock %}
 
         {% block content %}
-            <section class="container">
+            {% for message in app.flashes('success') %}
+                <div class="alert alert-success">
+                    {{ message }}
+                </div>
+            {% endfor %}
+            <section class="container single_container">
                 <article class="wrapper">
-                    <div class="row">
-                            <div class="tricks">
-                                <p>{{ post.title }}</p>
-                                <p>{{ post.content }}</p>
-{#                                <p>{{ post.creation_date }}</p>#}
+                    <div class="row row-single">
+                        <div class="tricks">
+                            <p>{{ post.title }}</p>
+                            <p>{{ post.content }}</p>
+                            {% if post.editionDate %}
+                                <p>Mis à jour le {{ post.editionDate | date("d/m/Y") }}</p>
+                            {% else %}
+                                <p>Créé le {{ post.creationDate | date("d/m/Y") }}</p>
+                            {% endif %}
+                            <div class="media-container">
                                 {% for m in media %}
-                                <img src="../public/upload/{{ m.link }}"/>
-                                    <img src="{{ asset("public/upload/#{ m.link }") }}"/>
+                                    {% if m.type == 1 %}
+                                        <div class="media-img">
+                                            <img src="{{ asset('/upload/' ~  m.link ) }}"/>
+                                        </div>
+                                    {% elseif m.type == 2 %}
+                                        <div class="media-vid">
+                                            <iframe width="400" height="250" src="{{ m.link }}"></iframe>
+                                        </div>
+                                    {% endif %}
                                 {% endfor %}
                             </div>
+                        </div>
                     </div>
+                    <a class="btn btn-primary" href="/update_figure/{{ post.id }}">Editer</a>
                 </article>
             </section>
         {% endblock %}
