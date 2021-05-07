@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\RessourceRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=RessourceRepository::class)
@@ -31,6 +32,12 @@ class Ressource
      * @ORM\Column(type="integer")
      */
     private $status;
+
+    /**
+     * @ORM\OneToOne(targetEntity=Media::class, inversedBy="ressource", cascade={"persist", "remove"})
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $media;
 
     public function getId(): ?int
     {
@@ -69,6 +76,18 @@ class Ressource
     public function setStatus(int $status): self
     {
         $this->status = $status;
+
+        return $this;
+    }
+
+    public function getMedia(): ?Media
+    {
+        return $this->media;
+    }
+
+    public function setMedia(Media $media): self
+    {
+        $this->media = $media;
 
         return $this;
     }

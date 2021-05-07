@@ -5,21 +5,30 @@ namespace App\Controller;
 use App\Entity\Post;
 use App\Entity\Media;
 use App\Entity\Ressource;
+use App\Repository\PostRepository;
+use App\Repository\MediaRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 class MainController extends AbstractController
 {
-//    private $Postrepository;
-//    private $MediaRepository;
-//    private $RessourceRepository;
+    private $postrepository;
+    private $mediarepository;
+    private $manager;
 
-    public function __construct()
+    /**
+     * MainController constructor.
+     * @param PostRepository $postRepository
+     * @param MediaRepository $mediaRepository
+     * @param EntityManagerInterface $manager
+     */
+    public function __construct(PostRepository $postRepository, MediaRepository $mediaRepository, EntityManagerInterface $manager)
     {
-//        $this->Postrepository = $this->getDoctrine()->getRepository(Post::class);
-//        $this->MediaRepository = $this->getDoctrine()->getRepository(Media::class);
-//        $this->RessourceRepository = $this->getDoctrine()->getRepository(Ressource::class);
+        $this->postrepository = $postRepository;
+        $this->mediarepository = $mediaRepository;
+        $this->manager = $manager;
     }
 
     /**
@@ -28,14 +37,16 @@ class MainController extends AbstractController
      */
     public function index(): Response
     {
-        $postRepository = $this->getDoctrine()->getRepository(Post::class);
-        $post = $postRepository->findBy([
+        //$postRepository = $this->getDoctrine()->getRepository(Post::class);
+        $post = $this->postrepository->findBy([
             'status' => 1,
         ]);
 
-        /*$media = $this->MediaRepository->findBy([
-            'post_id' => $Post->getId(),
-        ]);*/
+        foreach ($post as $p){
+            $post_id = $p->getId();
+        }
+
+        $media = $this->mediarepository->get_media($post_id);
 
         // Add other repositories requestes to find Media and ressource type
         $title = 'SnowTricks';
@@ -46,6 +57,7 @@ class MainController extends AbstractController
             'title' => $title,
             'sub' => $subtitle,
             'post' => $post,
+            'medias' => $media,
         ]);
     }
 }

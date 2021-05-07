@@ -30,12 +30,18 @@
 
             <section class="container-tricks">
                 <article class="wrapper-tricks">
-
                     <div class="row" id="tricks">
                         {% for p in post %}
                         <div class="tricks">
+                            {% for m in p.media %}
+                                {% if(m.ressource.status == 1 and m.ressource.type == 1) %}
+                                    <div class="img_filter">
+                                        <img src="{{ asset('/upload/' ~  m.link ) }}"/>
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
                             <p>{{ p.title }}</p>
-                            <p>{{ p.content | slice(0, 100) }}</p>
+{#                            <p>{{ p.content | slice(0, 100) }}</p>#}
                             <p>{{ p.category }}</p>
                             <a href="/figure/{{ p.id }}">Voir la figure</a>
                         </div>

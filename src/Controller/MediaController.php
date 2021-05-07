@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use App\Service\UpdateRessource;
 
 class MediaController extends AbstractController
 {
@@ -62,15 +63,26 @@ class MediaController extends AbstractController
         ]);
     }
 
-    /*public function update_media(int $id){
-        $mediaRepository = $this->getDoctrine()->getRepository(Media::class);
+    /**
+     * @param int $id
+     * @param UpdateRessource $updateRessource
+     * @Route("update_media/{id}", name="update_media")
+     * @return RedirectResponse
+     */
+    public function update_media(int $id, UpdateRessource $updateRessource){
+        $updateRessource->unset_couv($id);
+        $this->addFlash('success', 'Le média à bien été édité');
+        return $this->redirectToRoute('single_figure', [
+            'id' => $id
+        ]);
+        /*$mediaRepository = $this->getDoctrine()->getRepository(Media::class);
 
         $media = $mediaRepository->get_status($id);
 
 //        $media->getStatus()
         foreach ($media as $data){
             $status = $data->getStatus();
-        }
-    }*/
+        }*/
+    }
 
 }

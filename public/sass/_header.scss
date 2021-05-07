@@ -27,6 +27,7 @@ body{
     .header-filter{
       height: inherit;
       position: relative;
+      overflow: hidden;
       .filter{
         height: inherit;
         width: 100%;

@@ -12,9 +12,23 @@
         width: 200px;
         height: 200px;
         text-align: center;
-        border: 2px solid #555555;
         border-radius: 12px;
         margin: 10px;
+        position: relative;
+        background-color: rgba(0,0,0,0.4);
+        color: #fff;
+        .img_filter{
+          position: absolute;
+          top: 0;
+          left: 0;
+          z-index: -1;
+          img{
+            width: 200px;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 12px;
+          }
+        }
       }
     }
   }

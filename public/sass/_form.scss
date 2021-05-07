@@ -55,17 +55,37 @@
       margin-right: 30px;
       .modal-btn{
         position: absolute;
+        margin-left: 30px;
         z-index: 10;
         padding: 8px;
         transition: all 0.2s ease-in-out;
         background: none;
         border: none;
-        .fa-times-circle{
+        .fa-times-circle, .fa-edit{
           color: #ffffff;
         }
         &:hover{
           transform: scale(1.2);
         }
+      }
+      .edit{
+        margin-left: 0;
+        .fa-edit{
+          color: #ffffff;
+        }
+        &:hover{
+          transform: scale(1.2);
+        }
+      }
+      .fa-check-circle {
+        position: absolute;
+        margin-left: 60px;
+        z-index: 10;
+        padding: 12px;
+        transition: all 0.2s ease-in-out;
+        background: none;
+        border: none;
+        color: limegreen;
       }
       img{
         width: inherit;

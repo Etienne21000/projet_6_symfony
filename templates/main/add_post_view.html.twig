@@ -25,8 +25,9 @@
     <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
+
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Supprimer l'image</h5>
+                    <h5 class="modal-title" id="exampleModalLabel"></h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -36,13 +37,16 @@
                     <p class="title_m"></p>
                     <img class="link_m" src="">
                 </div>
+                <div class="status-edit">
+                </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                     <form action="" method="post" class="delete_media">
                         <input type="hidden" class="inp_media" value="" name="id">
-                        <input type="submit" class="btn btn-danger" value="Supprimer">
+                        <input type="submit" class="btn btn-form" value="">
                     </form>
                 </div>
+
             </div>
         </div>
     </div>
@@ -95,17 +99,26 @@
 
                 <div class="media-container">
                     {% for m in medias %}
-                        {% if m.type == 1 %}
+                        {% if m.ressource.type == 1 %}
                             <div class="media-img">
-                                <button type="button" data-toggle="modal" data-target="#exampleModal" data-id="{{ m.id }}" data-title="{{ m.link }}" class="btn modal-btn">
-                                    <i class="fas fa-times-circle"></i>
+                                <button type="button" data-toggle="modal" data-target="#exampleModal" data-id="{{ m.id }}" data-title="{{ m.link }}" data-action="delete" class="btn modal-btn">
+                                    <i class="fas fa-times-circle" title="Supprimer"></i>
                                 </button>
+                                <button type="button" data-toggle="modal" data-target="#exampleModal" data-id="{{ m.postId }}" data-title="{{ m.link }}" data-action="update" class="btn modal-btn edit">
+                                    <i class="fas fa-edit" title="Editer"></i>
+                                </button>
+                                {% if m.ressource.status == 1 %}
+                                    <i class="fas fa-check-circle" title="Image de couverture"></i>
+                                {% endif %}
                                 <img src="{{ asset('/upload/' ~  m.link ) }}"/>
                             </div>
-                        {% elseif m.type == 2 %}
+                        {% elseif m.ressource.type == 2 %}
                             <div class="media-vid">
-                                <button type="button" data-toggle="modal" data-target="#exampleModal" data-id="{{ m.id }}" data-title="{{ m.link }}" class="btn modal-btn">
+                                <button type="button" data-toggle="modal" data-target="#exampleModal" data-id="{{ m.id }}" data-title="{{ m.link }}" data-action="delete" class="btn modal-btn">
                                     <i class="fas fa-times-circle"></i>
+                                </button>
+                                <button type="button" data-toggle="modal" data-target="#exampleModal" data-id="{{ m.postId }}" data-title="{{ m.link }}" data-action="update" class="btn modal-btn edit">
+                                    <i class="fas fa-edit"></i>
                                 </button>
                                 <iframe width="200" height="120" src="{{ m.link }}"></iframe>
                             </div>

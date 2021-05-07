@@ -5,6 +5,9 @@ namespace App\Entity;
 use App\Repository\MediaRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 
 /**
  * @ORM\Entity(repositoryClass=MediaRepository::class)
@@ -38,6 +41,22 @@ class Media
      * @ORM\Column(type="integer")
      */
     private $post_id;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Post::class, inversedBy="media")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $post;
+
+    /**
+     * @ORM\OneToOne(targetEntity=Ressource::class, mappedBy="media", cascade={"persist", "remove"})
+     */
+    private $ressource;
+
+    /*public function getStatus(): ?int
+    {
+        return $this->status;
+    }*/
 
     public function getId(): ?int
     {
@@ -88,6 +107,35 @@ class Media
     public function setPostId(int $post_id): self
     {
         $this->post_id = $post_id;
+
+        return $this;
+    }
+
+    public function getPost(): ?Post
+    {
+        return $this->post;
+    }
+
+    public function setPost(?Post $post): self
+    {
+        $this->post = $post;
+
+        return $this;
+    }
+
+    public function getRessource(): ?Ressource
+    {
+        return $this->ressource;
+    }
+
+    public function setRessource(Ressource $ressource): self
+    {
+        // set the owning side of the relation if necessary
+        if ($ressource->getMedia() !== $this) {
+            $ressource->setMedia($this);
+        }
+
+        $this->ressource = $ressource;
 
         return $this;
     }

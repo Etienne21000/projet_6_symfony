@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\FigureRequest;
 use App\Entity\Media;
 use App\Entity\Ressource;
+use App\Repository\MediaRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -28,15 +29,19 @@ class PostController extends AbstractController
      */
     private $repository;
 
+    private $mediaRepository;
+
     /**
      * PostController constructor.
      * @param PostRepository $post
+     * @param MediaRepository $mediaRepository
      * @param EntityManagerInterface $manager
      */
-    public function __construct(PostRepository $post, EntityManagerInterface $manager)
+    public function __construct(PostRepository $post, MediaRepository $mediaRepository, EntityManagerInterface $manager)
     {
         $this->manager = $manager;
         $this->repository = $post;
+        $this->mediaRepository = $mediaRepository;
     }
 
     /**
@@ -124,30 +129,9 @@ class PostController extends AbstractController
      * @return object|null
      */
     private function find_signle(int $id){
-        $postRepository = $this->getDoctrine()->getRepository(Post::class);
-
-        return $post = $postRepository->findOneBy([
+        return $post = $this->repository->findOneBy([
             'id' => $id,
         ]);
-    }
-
-    /**
-     * @param int $id
-     * @return mixed
-     */
-    private function get_media(int $id){
-        $mediaRepository = $this->getDoctrine()->getRepository(Media::class);
-
-        return $medias = $mediaRepository->get_media($id);
-    }
-
-    public function get_couv_media(int $id){
-        $mediaRepository = $this->getDoctrine()->getRepository(Media::class);
-
-        $limit = 1;
-        $offset = 0;
-
-        return $mediaRepository->get_status($id, $limit, $offset);
     }
 
     /**
@@ -161,7 +145,7 @@ class PostController extends AbstractController
     public function update_trick($id, Request $request, ImageUploader $imageUploader)
     {
         $post = $this->find_signle($id);
-        $medias = $this->get_media($id);
+        $medias = $this->mediaRepository->get_media($id);
 
         $figure = new FigureRequest();
 
@@ -242,9 +226,9 @@ class PostController extends AbstractController
      */
     public function get_one_figure(int $id): Response
     {
-        $medias = $this->get_media($id);
+        $medias = $this->mediaRepository->get_media($id, $status = null);
         $post = $this->find_signle($id);
-        $couv = $this->get_couv_media($id);
+        $couv = $this->mediaRepository->get_media($id, $status = 1);
 
         $title = $post->getTitle();
         $sub = $post->getCategory();

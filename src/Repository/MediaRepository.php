@@ -6,6 +6,8 @@ use App\Entity\Media;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\DBAL\Exception;
 use Doctrine\Persistence\ManagerRegistry;
+use http\Params;
+use Symfony\Component\Serializer\SerializerInterface;
 
 /**
  * @method Media|null find($id, $lockMode = null, $lockVersion = null)
@@ -15,31 +17,30 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class MediaRepository extends ServiceEntityRepository
 {
-    private $manager;
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Media::class);
     }
 
-    public function get_media(int $id):array
+    public function get_media(int $id, int $status = null):array
     {
-        $manager = $this->getEntityManager()->getConnection();
+        $manager = $this->getEntityManager();
 
-        $sql = 'SELECT m.*, r.*
-            FROM media AS m
-            INNER JOIN ressource AS r 
-            ON r.media_id = m.id
-            WHERE m.post_id = :id';
+        $db = $manager->createQueryBuilder();
+        $db
+            ->select('m')
+            ->from('App\Entity\Media', 'm')
+            ->innerJoin('m.ressource', 'r')
+            ->where('m.post_id = :id')
+            ->setParameter('id', $id);
 
-        try {
-            $req = $manager->prepare($sql);
-        } catch (Exception $e) {
-            $e->getMessage();
+        if($status !== null){
+            $db->andWhere('r.status = '.$status);
         }
 
-        $req->execute([':id' => $id]);
+        $resp = $db->getQuery();
 
-        return $req->fetchAllAssociative();
+        return $resp->execute();
     }
 
     public function get_status(int $id, $limit, $offset):array
@@ -59,6 +60,21 @@ class MediaRepository extends ServiceEntityRepository
         $req->execute([':id' => $id]);
 
         return $req->fetchAllAssociative();
+    }
+
+    public function get_by_status(int $id) {
+        $manager = $this->getEntityManager();
+
+        $db = $manager->createQueryBuilder();
+        $db
+            ->select('m')
+            ->from('App\Entity\Media', 'm')
+            ->where('m.post_id = :id')
+            ->setParameter('id', $id);
+
+        $resp = $db->getQuery();
+
+        return $resp->execute();
     }
 
     // /**

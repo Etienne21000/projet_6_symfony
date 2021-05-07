@@ -20,9 +20,11 @@ class RessourceRepository extends ServiceEntityRepository
         parent::__construct($registry, Ressource::class);
     }
 
-    public function add_ressource(Media $media){
+    public function update_ressource(int $id) {
 
     }
+
+   // public function update_ressource(int $id)
 
     // /**
     //  * @return Ressource[] Returns an array of Ressource objects

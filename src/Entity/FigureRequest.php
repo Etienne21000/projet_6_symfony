@@ -72,4 +72,9 @@ class FigureRequest
      * @var integer
      */
     public $resType;
+
+    /**
+     * @var integer
+     */
+    public $resStatus;
 }
