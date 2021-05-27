@@ -1,0 +1,28 @@
+{% extends 'base.html.twig' %}
+
+{% block title %} Liste des figures par catégories {% endblock %}
+
+{% block header %}
+    <header class="main_header">
+        <div class="title-home">
+            <div class="wrapper-title">
+                <h1>Le {{ title }}</h1>
+                <p>Catergorie : {{ sub }}</p>
+            </div>
+        </div>
+        {#<div class="header-filter">
+            <div class="filter"></div>
+            {% for c in couv %}
+                <img src="{{ asset('/upload/' ~  c.link ) }}" class="header_img"/>
+            {% endfor %}
+        </div>#}
+    </header>
+{% endblock %}
+
+{% block content %}
+            {% for message in app.flashes('success') %}
+                <div class="alert alert-success">
+                    {{ message }}
+                </div>
+            {% endfor %}
+{%  %}

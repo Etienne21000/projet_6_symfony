@@ -17,9 +17,12 @@ use Symfony\Component\Serializer\SerializerInterface;
  */
 class MediaRepository extends ServiceEntityRepository
 {
+    private $manager;
+
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Media::class);
+        $this->manager = $this->getEntityManager();
     }
 
     public function get_media(int $id, int $status = null):array
@@ -42,6 +45,20 @@ class MediaRepository extends ServiceEntityRepository
 
         return $resp->execute();
     }
+
+    /*public function update_status(int $id){
+        $db = $this->manager->createQueryBuilder();
+        $db
+            ->select('m')
+            ->from('App\Entity\Media', 'm')
+            ->innerJoin('m.ressource', 'r')
+            ->where('m.id = :id')
+            ->setParameter('id', $id);
+
+        $resp = $db->getQuery();
+
+        return $resp->execute();
+    }*/
 
     public function get_status(int $id, $limit, $offset):array
     {

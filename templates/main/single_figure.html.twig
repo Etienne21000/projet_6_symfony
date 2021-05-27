@@ -42,18 +42,16 @@
                                         <div class="media-img">
                                             <img src="{{ asset('/upload/' ~  m.link ) }}"/>
                                         </div>
-                                        {{ m.ressource.status }}
                                     {% elseif m.ressource.type == 2 %}
                                         <div class="media-vid">
                                             <iframe width="400" height="250" src="{{ m.link }}"></iframe>
                                         </div>
-                                        {{ m.ressource.status }}
                                     {% endif %}
                                 {% endfor %}
                             </div>
                         </div>
                     </div>
-                    <a class="btn btn-primary" href="/update_figure/{{ post.id }}">Editer</a>
+                    <a class="btn btn-primary" href="/update_figure/{{ post.Slug }}">Editer</a>
                 </article>
 
             </section>

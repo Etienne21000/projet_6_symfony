@@ -15,6 +15,7 @@ use App\Form\PostType;
 use App\Entity\Post;
 use App\Repository\PostRepository;
 use App\Service\ImageUploader;
+use Symfony\Component\Security\Core\Security;
 
 
 class PostController extends AbstractController
@@ -31,17 +32,20 @@ class PostController extends AbstractController
 
     private $mediaRepository;
 
+    private $security;
+
     /**
      * PostController constructor.
      * @param PostRepository $post
      * @param MediaRepository $mediaRepository
      * @param EntityManagerInterface $manager
      */
-    public function __construct(PostRepository $post, MediaRepository $mediaRepository, EntityManagerInterface $manager)
+    public function __construct(PostRepository $post, MediaRepository $mediaRepository, EntityManagerInterface $manager, Security $security)
     {
         $this->manager = $manager;
         $this->repository = $post;
         $this->mediaRepository = $mediaRepository;
+        $this->security = $security;
     }
 
     /**
@@ -62,11 +66,12 @@ class PostController extends AbstractController
      * @Route("/addPost", name="addPost")
      */
     public function addPost(Request $request, ImageUploader $imageUploader){
+
         $title = 'Ajouter une nouvelle figure';
         $sub = 'Ajouter un trick en choisissant sa catégorie';
+        $action = 'create';
 
         $figure = new FigureRequest();
-
         $post = new Post();
         $media = new Media();
         $ressource = new Ressource();
@@ -78,6 +83,7 @@ class PostController extends AbstractController
 
         $form = $this->createForm(PostType::class, $figure);
         $form->handleRequest($request);
+        $link = $figure->mediaLink;
 
         if($form->isSubmitted() && $form->isValid()){
 
@@ -87,64 +93,80 @@ class PostController extends AbstractController
                 ->setTitle($figure->figureTitle)
                 ->setContent($figure->figureContent)
                 ->setStatus($figure->figureStatus)
-                ->setCategory($figure->figureCategory);
+                ->setCategory($figure->figureCategory)
+                ->setSlug($post->getTitle());
 
             $this->manager->persist($post);
             $this->manager->flush();
 
-            $media
-                ->setPostId($post->getId());
-
             if($imageFile){
                 $fileName = $imageUploader->upload($imageFile);
+                $media->setPost($post);
+                $media->setPostId($post->getId());
+                $media->setPostSlug($post->getSlug());
                 $media->setLink($fileName);
+                $ressource->setType(1);
+            }
+            elseif($link) {
+                $media->setPost($post);
+                $media->setLink($figure->mediaLink);
+                $media->setPostId($post->getId());
+                $media->setPostSlug($post->getSlug());
+                $ressource->setType(2);
             }
 
-            $this->manager->persist($media);
-            $this->manager->flush();
+            if($imageFile || $link){
+                $this->manager->persist($media);
+                $this->manager->flush();
 
-            $ressource
-                ->setMediaId($media->getId())
-                ->setType($figure->resType)
-                ->setStatus(1);
+                $ressource
+                    ->setMedia($media)
+                    ->setMediaId($media->getId())
+                    ->setStatus(0);
 
-            $this->manager->persist($ressource);
-            $this->manager->flush();
+
+                $this->manager->persist($ressource);
+                $this->manager->flush();
+            }
 
             $this->addFlash('success', 'La figure à bien été ajoutée');
             return $this->redirectToRoute('single_figure', [
-               'id' => $post->getId(),
+               'slug' => $post->getSlug(),
             ]);
         }
 
         return $this->render('main/add_post_view.html.twig', [
-            'title' => $title,
-            'sub' => $sub,
-            'form' => $form->createView(),
-        ]);
+                'title' => $title,
+                'sub' => $sub,
+                'form' => $form->createView(),
+                'action' => $action,
+            ]);
     }
 
     /**
-     * @param int $id
+     * @param string $slug
      * @return object|null
      */
-    private function find_signle(int $id){
+    private function find_signle(string $slug){
         return $post = $this->repository->findOneBy([
-            'id' => $id,
+            'Slug' => $slug,
         ]);
     }
 
     /**
-     * @param int $id
+     * @param $slug
      * @param Request $request
      * @param ImageUploader $imageUploader
      * @return Response
-     * @Route("update_figure/{id}", name="update_figure")
      * @throws \Exception
+     * @Route("update_figure/{slug}", name="update_figure")
      */
-    public function update_trick($id, Request $request, ImageUploader $imageUploader)
+    public function update_trick($slug, Request $request, ImageUploader $imageUploader)
     {
-        $post = $this->find_signle($id);
+        if ($this->security->isGranted('ROLE_USER')){
+
+            $post = $this->find_signle($slug);
+        $id = $post->getId();
         $medias = $this->mediaRepository->get_media($id);
 
         $figure = new FigureRequest();
@@ -172,20 +194,24 @@ class PostController extends AbstractController
                 ->setTitle($figure->figureTitle)
                 ->setContent($figure->figureContent)
                 ->setStatus($figure->figureStatus)
-                ->setCategory($figure->figureCategory);
+                ->setCategory($figure->figureCategory)
+                ->setSlug($post->getTitle());
 
             $this->manager->persist($post);
             $this->manager->flush();
 
             if($imageFile){
                 $fileName = $imageUploader->upload($imageFile);
+                $media->setPost($post);
                 $media->setPostId($post->getId());
+                $media->setPostSlug($post->getSlug());
                 $media->setLink($fileName);
                 $ressource->setType(1);
             }
             elseif($link) {
                 $media->setLink($figure->mediaLink);
                 $media->setPostId($post->getId());
+                $media->setPostSlug($post->getSlug());
                 $ressource->setType(2);
             }
 
@@ -194,8 +220,9 @@ class PostController extends AbstractController
                 $this->manager->flush();
 
                 $ressource
+                    ->setMedia($media)
                     ->setMediaId($media->getId())
-                    ->setStatus(1);
+                    ->setStatus(0);
 
                 $this->manager->persist($ressource);
                 $this->manager->flush();
@@ -203,31 +230,40 @@ class PostController extends AbstractController
 
             $this->addFlash('success', 'La figure '.$post->getTitle().' à bien été éditée');
             return $this->redirectToRoute('single_figure', [
-                'id' => $post->getId(),
+                'slug' => $post->getSlug(),
             ]);
         }
 
-        return $this->render('main/add_post_view.html.twig', [
-            'title' => $title,
-            'sub' => $sub,
-            'action' => $action,
-            'form' => $form->createView(),
-            'id' => $id,
-            'post' => $post,
-            'post_title' => $post->gettitle(),
-            'medias' => $medias,
-        ]);
+            return $this->render('main/add_post_view.html.twig', [
+                'title' => $title,
+                'sub' => $sub,
+                'action' => $action,
+                'form' => $form->createView(),
+                'id' => $id,
+                'post' => $post,
+                'post_title' => $post->gettitle(),
+                'medias' => $medias,
+            ]);
+        } else {
+            $this->addFlash('error', 'Attention, vous devez être connecté pour modifier une figure');
+            return $this->redirectToRoute('app_login');
+        }
+
     }
 
     /**
-     * @param $id
-     * @Route("/figure/{id}", name="single_figure")
+     * @param $slug
+     * @Route("/figure/{slug}", name="single_figure")
      * @return Response
      */
-    public function get_one_figure(int $id): Response
+    public function get_one_figure(string $slug): Response
     {
+//        $post = $this->find_signle($title);
+        $post = $post = $this->repository->findOneBy([
+            'Slug' => $slug,
+        ]);
+        $id = $post->getId();
         $medias = $this->mediaRepository->get_media($id, $status = null);
-        $post = $this->find_signle($id);
         $couv = $this->mediaRepository->get_media($id, $status = 1);
 
         $title = $post->getTitle();

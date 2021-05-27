@@ -33,19 +33,22 @@ class UpdateRessource
         $this->manager = $manager;
     }
 
+    private function get_medias(int $id) {
+        $medias = $this->mediaRepository->get_media($id, $status = 1);
+        return $medias;
+    }
+
     /**
      * @param int $id
      */
     public function unset_couv(int $id){
-//        $media = new Media();
-//        $ressource = new Ressource();
 
-        $medias = $this->mediaRepository->get_media($id, $status = 1);
+        $medias = $this->get_medias($id);
 
         foreach ($medias as $m){
             $id = $m->getId();
             $ressource = $this->resRepository->findOneBy([
-                'id' => $id,
+                'media_id' => $id,
             ]);
             $ressource->setStatus(0);
 
@@ -56,10 +59,17 @@ class UpdateRessource
 
     /**
      * @param int $id
-     * @Route("update_media/{id}", name="update_media")
+     * @param int $media_id
      */
-    public function update_ressource(int $id){
+    public function update_ressource(int $id, int $media_id){
         $this->unset_couv($id);
+
+        $ressource = $this->resRepository->findOneBy([
+           'media_id' => $media_id,
+        ]);
+        $ressource->setStatus(1);
+        $this->manager->persist($ressource);
+        $this->manager->flush();
     }
 
 }

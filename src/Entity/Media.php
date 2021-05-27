@@ -53,6 +53,11 @@ class Media
      */
     private $ressource;
 
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $post_slug;
+
     /*public function getStatus(): ?int
     {
         return $this->status;
@@ -136,6 +141,18 @@ class Media
         }
 
         $this->ressource = $ressource;
+
+        return $this;
+    }
+
+    public function getPostSlug(): ?string
+    {
+        return $this->post_slug;
+    }
+
+    public function setPostSlug(string $post_slug): self
+    {
+        $this->post_slug = $post_slug;
 
         return $this;
     }

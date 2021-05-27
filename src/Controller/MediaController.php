@@ -12,6 +12,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Service\UpdateRessource;
+use App\Repository\PostRepository;
 
 class MediaController extends AbstractController
 {
@@ -25,15 +26,19 @@ class MediaController extends AbstractController
      */
     private $repository;
 
+    private $postRepository;
+
     /**
      * MediaController constructor.
      * @param MediaRepository $media
      * @param EntityManagerInterface $manager
+     * @param PostRepository $postRepository
      */
-    public function __construct(MediaRepository $media, EntityManagerInterface $manager)
+    public function __construct(MediaRepository $media, EntityManagerInterface $manager, PostRepository $postRepository)
     {
         $this->repository = $media;
         $this->manager = $manager;
+        $this->postRepository = $postRepository;
     }
 
     private function get_single_media(int $id){
@@ -54,35 +59,42 @@ class MediaController extends AbstractController
         $media_link = $media->getLink();
         $post_id = $media->getPostId();
 
+        $post = $this->postRepository->findOneBy([
+           'id' => $post_id,
+        ]);
+
+        $slug = $post->getSlug();
+
         $this->manager->remove($media);
         $this->manager->flush();
 
         $this->addFlash('success', 'Le média '.$media_link.' a bien été supprimé');
         return $this->redirectToRoute('update_figure', [
-            'id' => $post_id,
+            'slug' => $slug,
         ]);
     }
 
     /**
      * @param int $id
+     * @param int $media_id
      * @param UpdateRessource $updateRessource
-     * @Route("update_media/{id}", name="update_media")
+     * @Route("update_media/{id}/{media_id}", name="update_media")
      * @return RedirectResponse
      */
-    public function update_media(int $id, UpdateRessource $updateRessource){
-        $updateRessource->unset_couv($id);
-        $this->addFlash('success', 'Le média à bien été édité');
-        return $this->redirectToRoute('single_figure', [
-            'id' => $id
+    public function update_media(int $id, int $media_id, UpdateRessource $updateRessource){
+
+        $post = $this->postRepository->findOneBy([
+            'id' => $id,
         ]);
-        /*$mediaRepository = $this->getDoctrine()->getRepository(Media::class);
 
-        $media = $mediaRepository->get_status($id);
+        $slug = $post->getSlug();
 
-//        $media->getStatus()
-        foreach ($media as $data){
-            $status = $data->getStatus();
-        }*/
+        $updateRessource->update_ressource($id, $media_id);
+        $this->addFlash('success', 'Le média à bien été édité');
+
+        return $this->redirectToRoute('update_figure', [
+            'slug' => $slug
+        ]);
     }
 
 }

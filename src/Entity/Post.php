@@ -7,9 +7,11 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * @ORM\Entity(repositoryClass=PostRepository::class)
+ * @UniqueEntity(fields={"title"}, message= "Attention, cette figure existe déjà")
  */
 class Post
 {
@@ -62,6 +64,11 @@ class Post
      * @ORM\OneToMany(targetEntity=Media::class, mappedBy="post", orphanRemoval=true)
      */
     private $media;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $Slug;
 
     public function __construct()
     {
@@ -155,6 +162,26 @@ class Post
         $this->category = $category;
 
         return $this;
+    }
+
+    private function manage_slug(){
+        $str_slug = strtolower($this->title);
+        $resp = preg_replace("/\s+/", "_", $str_slug);
+        return $resp;
+    }
+
+    public function setSlug(string $Slug): self
+    {
+        $resp = $this->manage_slug();
+        $Slug = $resp;
+        $this->Slug = $Slug;
+
+        return $this;
+    }
+
+    public function getSlug(): ?string
+    {
+        return $this->Slug;
     }
 
     /**
