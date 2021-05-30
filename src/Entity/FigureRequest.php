@@ -2,8 +2,13 @@
 
 namespace App\Entity;
 
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
+/**
+ * Class FigureRequest
+ * @package App\Entity
+ */
 class FigureRequest
 {
     /**

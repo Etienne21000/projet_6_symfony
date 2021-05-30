@@ -11,6 +11,8 @@ document.addEventListener('DOMContentLoaded', function(){
     let btn_modal_form = document.querySelector('.btn-form');
     let status_edit = document.querySelector('.status-edit');
     let media_id = document.querySelector('.media_id');
+    let btn_comment = document.querySelector('#add-com');
+    let bloc_com = document.querySelector('.comment_user_granted');
 
     function display_img_form(){
         image.addEventListener('click', (e) => {
@@ -74,6 +76,12 @@ document.addEventListener('DOMContentLoaded', function(){
         })
     }
 
+    function display_add_comment(){
+        btn_comment.addEventListener('click', (e) => {
+            bloc_com.style.display = "block";
+        });
+    }
+
     function remove_alerte(){
         if(alerte_div){
             setTimeout(() => {
@@ -82,9 +90,9 @@ document.addEventListener('DOMContentLoaded', function(){
             return false;
         }
     }
-
-    remove_alerte();
+    display_add_comment();
     get_media_id();
     display_img_form();
     display_vid_form();
+    remove_alerte();
 });

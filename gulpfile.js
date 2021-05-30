@@ -14,6 +14,13 @@ gulp.task('build', function() {
         .pipe(gulp.dest('public/style/'));
 });
 
+gulp.task('back', function(){
+    return gulp.src('public/sass/custom.scss')
+        .pipe(sass({outputStyle: 'compressed'}))
+        .pipe(rename('custom.min.css'))
+        .pipe(gulp.dest('public/style/'));
+});
+
 gulp.task('clean-css', function () {
     return gulp.src('public/style/', {read: false})
         .pipe(clean());
@@ -23,5 +30,6 @@ gulp.task('sass', async function(callback) {
     runSequence(
         ['clean-css'],
         ['build'],
+        ['back'],
         callback);
 });

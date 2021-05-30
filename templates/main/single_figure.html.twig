@@ -52,6 +52,75 @@
                         </div>
                     </div>
                     <a class="btn btn-primary" href="/update_figure/{{ post.Slug }}">Editer</a>
+
+                    <div class="comments">
+
+                        <div class="container">
+
+                            <h4 class="comment-title">
+                                Les derniers commentaires
+                            </h4>
+{#                            {#{% if session.error != '' %}#}{#
+                                <div class="alert alert-danger" role="alert">
+#}{#                                    {{ session.error }}#}{#
+                                </div>
+#}{#                            {% elseif session.success != '' %}#}{#
+                                <div class="alert alert-success" role="alert">
+#}{#                                    {{ session.success }}#}{#
+                                </div>
+#}{#                            {% endif %}#}
+
+                            {#<a href="" class="btn btn-primary add-com">
+                                Ajouter un commentaire <i class="fas fa-edit"></i>
+                            </a>#}
+                            <button type="button" class="btn btn-primary add-com" value="" id="add-com">Ajouter un commentaire <i class="fas fa-edit"></i></button>
+
+                            <div class="comment_user_granted">
+                                {% if app.user %}
+                                    <div class="form-comment">
+                                        {{ form_start(form, {'attr': {'novalidate': 'novalidate' }}) }}
+                                            <div class="form-group">
+                                                Commentaire à ajouter
+                                            </div>
+                                            <div class="form-group">
+                                                {{ form_row(form.content) }}
+                                            </div>
+
+                                            <div class="form-group">
+                                                {{ form_row(form.post_id, {'value': post.id}) }}
+                                            </div>
+
+                                            <div class="form-group">
+                                                {{ form_row(form.user_id, {'value': app.user.id}) }}
+                                            </div>
+                                        <button type="submit" class="btn btn-primary">Commenter</button>
+                                        {{ form_end(form) }}
+                                    </div>
+                                    {% else %}
+                                    <p>Vous devez être connecté pour ajouter un commentaire</p>
+                                    <a class="btn btn-success" href="/login">Se connecter</a>
+                                {% endif %}
+                            </div>
+
+                            {% for comment in comments %}
+
+                                <div class="comment-container">
+
+                                    <div class="com-title">
+                                        {{ comment.content }}
+                                    </div>
+
+                                    <p class="pseudo">
+                                        Ajouté par {{ comment.user.username }} <br>
+                                        Le {{ comment.creationDate|date("d/m/Y") }}
+                                    </p>
+                                </div>
+
+                            {% endfor %}
+
+                        </div>
+                    </div>
+
                 </article>
 
             </section>

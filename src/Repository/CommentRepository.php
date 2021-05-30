@@ -14,9 +14,58 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class CommentRepository extends ServiceEntityRepository
 {
+    private $manager;
+
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Comment::class);
+        $this->manager = $this->getEntityManager();
+    }
+
+    /**
+     * @param int $id
+     * @param int|null $status
+     * @return array
+     */
+    public function get_comments(int $id, int $status = null):array
+    {
+        $db = $this->manager->createQueryBuilder();
+        $db
+            ->select('c')
+            ->from('App\Entity\Comment', 'c')
+            ->innerJoin('c.user', 'u')
+            ->where('c.post_id = :id')
+            ->setParameter('id', $id);
+
+        if($status !== null){
+            $db->andWhere('c.status = '.$status);
+        }
+
+        $resp = $db->getQuery();
+
+        return $resp->execute();
+    }
+
+    /**
+     * @param int|null $status
+     * @return mixed
+     * @throws \Doctrine\ORM\NoResultException
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
+    public function count_comments(int $status = null)
+    {
+        $db = $this->manager->createQueryBuilder();
+        $db
+            ->select('count(c.id)')
+            ->from('App\Entity\Comment', 'c');
+
+        if($status !== null) {
+            $db->where('c.status = '.$status);
+        }
+
+        $resp = $db->getQuery();
+
+        return $resp->getSingleScalarResult();
     }
 
     // /**

@@ -5,17 +5,22 @@ namespace App\Controller;
 use App\Entity\FigureRequest;
 use App\Entity\Media;
 use App\Entity\Ressource;
+use App\Entity\Comment;
+use App\Entity\User;
+use App\Repository\CommentRepository;
 use App\Repository\MediaRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Form\PostType;
 use App\Entity\Post;
 use App\Repository\PostRepository;
 use App\Service\ImageUploader;
 use Symfony\Component\Security\Core\Security;
+use App\Form\CommentType;
 
 
 class PostController extends AbstractController
@@ -34,18 +39,23 @@ class PostController extends AbstractController
 
     private $security;
 
+    private $commentRepository;
+
     /**
      * PostController constructor.
      * @param PostRepository $post
      * @param MediaRepository $mediaRepository
+     * @param CommentRepository $commentRepository
      * @param EntityManagerInterface $manager
+     * @param Security $security
      */
-    public function __construct(PostRepository $post, MediaRepository $mediaRepository, EntityManagerInterface $manager, Security $security)
+    public function __construct(PostRepository $post, MediaRepository $mediaRepository, CommentRepository $commentRepository, EntityManagerInterface $manager, Security $security)
     {
         $this->manager = $manager;
         $this->repository = $post;
         $this->mediaRepository = $mediaRepository;
         $this->security = $security;
+        $this->commentRepository = $commentRepository;
     }
 
     /**
@@ -252,29 +262,60 @@ class PostController extends AbstractController
     }
 
     /**
-     * @param $slug
-     * @Route("/figure/{slug}", name="single_figure")
+     * @param string $slug
+     * @param Request $request
      * @return Response
+     * @Route("/figure/{slug}", name="single_figure")
+     * @throws \Exception
      */
-    public function get_one_figure(string $slug): Response
+    public function get_one_figure(string $slug, Request $request): Response
     {
-//        $post = $this->find_signle($title);
+        $com = new Comment();
+        $user_id = $this->getUser()->getId();
+
         $post = $post = $this->repository->findOneBy([
             'Slug' => $slug,
         ]);
         $id = $post->getId();
+        $comments = $this->commentRepository->get_comments($id, $status = 1);
         $medias = $this->mediaRepository->get_media($id, $status = null);
         $couv = $this->mediaRepository->get_media($id, $status = 1);
 
         $title = $post->getTitle();
         $sub = $post->getCategory();
 
+        $form = $this->createForm(CommentType::class, $com);
+        $form->handleRequest($request);
+        $com->setCreationDate(new \DateTime('now'));
+        $com->setStatus(0);
+        $com->setUserId($user_id);
+
+        if($form->isSubmitted() && $form->isValid()){
+            $com->setContent($com->getContent())
+                ->setPostId($com->getPostId())
+                ->setUser($com->getUser());
+
+            echo "<pre>";
+            print_r($com);
+            echo "</pre>";
+            exit();
+
+            $this->manager->persist($com);
+            $this->manager->flush();
+
+            $this->addFlash('success', 'Votre commentaire à bien été ajouté, il va être soumis à validation');
+            return $this->redirectToRoute('single_figure', [
+                'slug' => $post->getSlug(),
+            ]);
+        }
         return $this->render('main/single_figure.html.twig', [
             'title' => $title,
             'sub' => $sub,
             'post' => $post,
             'media' => $medias,
             'couv' => $couv,
+            'comments' => $comments,
+            'form' => $form->createView(),
         ]);
     }
 }

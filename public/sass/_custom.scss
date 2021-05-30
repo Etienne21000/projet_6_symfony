@@ -1,0 +1,25 @@
+#wrapper{
+  #content-wrapper{
+    #content{
+      padding: 25px;
+      .row {
+        .col-lg-6{
+          .card{
+            .table{
+              tbody{
+                td{
+                  .fa-check-circle{
+                    color: mediumseagreen;
+                  }
+                  .fa-minus-circle{
+                    color: red;
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
