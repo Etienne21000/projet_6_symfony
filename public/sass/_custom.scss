@@ -3,16 +3,37 @@
     #content{
       padding: 25px;
       .row {
+        flex-direction: row !important;
+        width: 100%;
+        .col-lg-6 {
+          &:nth-child(1){
+            max-width: 100% !important;
+            flex: 0 0 100% !important;
+
+            .custom-block {
+              max-width: 100% !important;
+              .custom-row{
+                max-width: 30% !important;
+                flex: 0 0 30% !important;
+              }
+            }
+          }
+        }
         .col-lg-6{
-          .card{
-            .table{
-              tbody{
-                td{
-                  .fa-check-circle{
-                    color: mediumseagreen;
-                  }
-                  .fa-minus-circle{
-                    color: red;
+          &:nth-child(2){
+            max-width: 100% !important;
+            flex: 0 0 100% !important;
+            .card {
+              .table {
+                tbody {
+                  td {
+                    .fa-check-circle {
+                      color: mediumseagreen;
+                    }
+
+                    .fa-minus-circle {
+                      color: red;
+                    }
                   }
                 }
               }

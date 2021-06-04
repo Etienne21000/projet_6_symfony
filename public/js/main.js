@@ -15,25 +15,29 @@ document.addEventListener('DOMContentLoaded', function(){
     let bloc_com = document.querySelector('.comment_user_granted');
 
     function display_img_form(){
-        image.addEventListener('click', (e) => {
-            let img_val = image.dataset.value;
-            console.log(img_val);
-            media_select.style.display = 'block';
-            media_select.style.visibility = 'visible';
-            input_img.style.display = "flex";
-            media_img.style.display = "none";
-        });
+        if(image){
+            image.addEventListener('click', (e) => {
+                let img_val = image.dataset.value;
+                console.log(img_val);
+                media_select.style.display = 'block';
+                media_select.style.visibility = 'visible';
+                input_img.style.display = "flex";
+                media_img.style.display = "none";
+            });
+        }
     }
 
     function display_vid_form(){
-        video.addEventListener('click', (e) => {
-            let vid_val = video.dataset.value;
-            console.log(vid_val);
-            media_select.style.display = 'block';
-            media_select.style.visibility = 'visible';
-            media_img.style.display = "flex";
-            input_img.style.display = "none";
-        });
+        if(video){
+            video.addEventListener('click', (e) => {
+                let vid_val = video.dataset.value;
+                console.log(vid_val);
+                media_select.style.display = 'block';
+                media_select.style.visibility = 'visible';
+                media_img.style.display = "flex";
+                input_img.style.display = "none";
+            });
+        }
     }
 
     function get_media_id(){
@@ -44,7 +48,6 @@ document.addEventListener('DOMContentLoaded', function(){
             let title_value = btn.dataset.title;
 
             btn.addEventListener('click', (e) => {
-                console.log(m_id);
                 let title = document.querySelector('.title_m');
                 let img = document.querySelector('.link_m');
                 let inp_media = document.querySelector('.inp_media');
@@ -77,9 +80,11 @@ document.addEventListener('DOMContentLoaded', function(){
     }
 
     function display_add_comment(){
-        btn_comment.addEventListener('click', (e) => {
-            bloc_com.style.display = "block";
-        });
+        if(btn_comment){
+            btn_comment.addEventListener('click', (e) => {
+                bloc_com.style.display = "block";
+            });
+        }
     }
 
     function remove_alerte(){

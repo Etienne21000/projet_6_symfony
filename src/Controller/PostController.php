@@ -268,12 +268,13 @@ class PostController extends AbstractController
      * @Route("/figure/{slug}", name="single_figure")
      * @throws \Exception
      */
-    public function get_one_figure(string $slug, Request $request): Response
+    public function get_one_figure(string $slug, Request $request)
     {
         $com = new Comment();
-        $user_id = $this->getUser()->getId();
+        $user = $this->getUser();
+        //$user_id = $this->getUser()->getId();
 
-        $post = $post = $this->repository->findOneBy([
+        $post = $this->repository->findOneBy([
             'Slug' => $slug,
         ]);
         $id = $post->getId();
@@ -286,19 +287,13 @@ class PostController extends AbstractController
 
         $form = $this->createForm(CommentType::class, $com);
         $form->handleRequest($request);
-        $com->setCreationDate(new \DateTime('now'));
-        $com->setStatus(0);
-        $com->setUserId($user_id);
 
         if($form->isSubmitted() && $form->isValid()){
-            $com->setContent($com->getContent())
-                ->setPostId($com->getPostId())
-                ->setUser($com->getUser());
-
-            echo "<pre>";
-            print_r($com);
-            echo "</pre>";
-            exit();
+            $com->setCreationDate(new \DateTime('now'))
+            ->setStatus(0)
+            ->setPost($post)
+            ->setUser($user);
+            $com = $form->getData();
 
             $this->manager->persist($com);
             $this->manager->flush();

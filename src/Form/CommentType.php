@@ -22,7 +22,8 @@ class CommentType extends AbstractType
                 'label' => 'Votre commentaire',
             ])
             ->add('post_id', hiddenType::class)
-            ->add('user_id', hiddenType::class);
+            ->add('user_id', hiddenType::class)
+            ->add('status', hiddenType::class);
     }
 
     public function configureOptions(OptionsResolver $resolver)

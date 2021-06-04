@@ -3,6 +3,46 @@
 {% block title %} SnowTricks back-office {% endblock %}
 
 {% block content %}
+
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel"></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <h6 class="m-title-h3"></h6>
+                    <input type="hidden" name="id" value="" class="input_id">
+                    <p class="content-comment"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <form action="" method="post" class="delete_comment">
+                        <input type="hidden" class="com_id_delete" value="" name="id">
+                        <input type="submit" class="btn btn-danger" value="Supprimer">
+                    </form>
+                    <form action="" method="post" class="update_comment">
+{#                        {{ form_start(form, {'attr': {'novalidate': 'novalidate' }}) }}#}
+                        <input type="hidden" class="com_id" value="" name="id">
+{#                        {{ form_row(form.status) }}#}
+                        <input type="submit" class="btn btn-success" value="Valider">
+{#                        {{ form_end(form) }}#}
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success">
+            {{ message }}
+        </div>
+    {% endfor %}
+
     <h2 class="title">
         {{ title }}
     </h2>
@@ -11,14 +51,11 @@
     </h4>
 
     <div class="row">
-
         <!-- Content Column -->
         <div class="col-lg-6 mb-4">
-
-
             <!-- Color System -->
-            <div class="row">
-                <div class="col-lg-6 mb-4">
+            <div class="row custom-block">
+                <div class="col-lg-6 mb-4 custom-row">
                     <div class="card bg-primary text-white shadow">
                         <div class="card-body">
                             Total :<br>
@@ -26,7 +63,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-6 mb-4">
+                <div class="col-lg-6 mb-4 custom-row">
                     <div class="card bg-success text-white shadow">
                         <div class="card-body">
                             Validés : <br>
@@ -34,7 +71,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-6 mb-4">
+                <div class="col-lg-6 mb-4 custom-row">
                     <div class="card bg-danger text-white shadow">
                         <div class="card-body">
                             Non validés : <br>
@@ -42,55 +79,13 @@
                         </div>
                     </div>
                 </div>
-
-                {#<div class="col-lg-6 mb-4">
-                    <div class="card bg-warning text-white shadow">
-                        <div class="card-body">
-                            Warning
-                            <div class="text-white-50 small">#f6c23e</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-lg-6 mb-4">
-                    <div class="card bg-danger text-white shadow">
-                        <div class="card-body">
-                            Danger
-                            <div class="text-white-50 small">#e74a3b</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-6 mb-4">
-                    <div class="card bg-secondary text-white shadow">
-                        <div class="card-body">
-                            Secondary
-                            <div class="text-white-50 small">#858796</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-6 mb-4">
-                    <div class="card bg-light text-black shadow">
-                        <div class="card-body">
-                            Light
-                            <div class="text-black-50 small">#f8f9fc</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-6 mb-4">
-                    <div class="card bg-dark text-white shadow">
-                        <div class="card-body">
-                            Dark
-                            <div class="text-white-50 small">#5a5c69</div>
-                        </div>
-                    </div>
-                </div>#}
             </div>
 
         </div>
 
         <div class="col-lg-6 mb-4">
 
-            <!-- Illustrations -->
+            <!-- All Comments -->
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
                     <h6 class="m-0 font-weight-bold text-primary">Tous les commentaires</h6>
@@ -100,7 +95,8 @@
                     <tr>
                         <th scope="col">ID</th>
                         <th scope="col">Content</th>
-                        <th scope="col">Post</th>
+                        <th scope="col">Figure</th>
+                        <th scope="col">Utilisateur</th>
                         <th scope="col">Status</th>
                     </tr>
                     </thead>
@@ -110,10 +106,15 @@
                             <th scope="row">{{ comment.id }}</th>
                             <td>{{ comment.content }}</td>
                             <td>{{ comment.post.slug }}</td>
+                            <td>{{ comment.user.username }}</td>
                             {% if comment.status == 1 %}
                                 <td><i class="fas fa-check-circle"></i></td>
                             {% elseif comment.status == 0 %}
-                                <td><i class="fas fa-minus-circle"></i></td>
+                                <td>
+                                    <button type="button" data-toggle="modal" data-target="#exampleModal" data-id="{{ comment.id }}" data-content="{{ comment.content }}" data-user="{{ comment.user.username }}" data-action="update" class="btn modal-btn edit">
+                                        <i class="fas fa-minus-circle"></i>
+                                    </button>
+                                </td>
                             {% endif %}
                         </tr>
                     {% endfor %}
@@ -121,18 +122,70 @@
                 </table>
             </div>
 
-            <!-- Approach -->
+            <!-- Not validated Comments -->
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Development Approach</h6>
+                    <h6 class="m-0 font-weight-bold text-primary">Commentaires en attente de validation</h6>
                 </div>
-                <div class="card-body">
-                    <p>SB Admin 2 makes extensive use of Bootstrap 4 utility classes in order to reduce
-                        CSS bloat and poor page performance. Custom CSS classes are used to create
-                        custom components and custom utility classes.</p>
-                    <p class="mb-0">Before working with this theme, you should become familiar with the
-                        Bootstrap framework, especially the utility classes.</p>
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th scope="col">ID</th>
+                        <th scope="col">Content</th>
+                        <th scope="col">Figure</th>
+                        <th scope="col">Utilisateur</th>
+                        <th scope="col">Status</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for not_valid in not_val %}
+                        <tr>
+                            <th scope="row">{{ not_valid.id }}</th>
+                            <td>{{ not_valid.content }}</td>
+                            <td>{{ not_valid.post.slug }}</td>
+                            <td>{{ not_valid.user.username }}</td>
+                            <td>
+                                <button type="button" data-toggle="modal" data-target="#exampleModal" data-id="{{ not_valid.id }}" data-content="{{ not_valid.content }}" data-action="update" class="btn modal-btn edit">
+                                    <i class="fas fa-minus-circle"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Not validated Comments -->
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Commentaires en attente de validation</h6>
                 </div>
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th scope="col">ID</th>
+                        <th scope="col">Content</th>
+                        <th scope="col">Figure</th>
+                        <th scope="col">Utilisateur</th>
+                        <th scope="col">Status</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for valid in val %}
+                        <tr>
+                            <th scope="row">{{ valid.id }}</th>
+                            <td>{{ valid.content }}</td>
+                            <td>{{ valid.post.slug }}</td>
+                            <td>{{ valid.user.username }}</td>
+                            <td>
+                                <button type="button" data-toggle="modal" data-target="#exampleModal" data-id="{{ valid.id }}" data-content="{{ valid.content }}" data-action="update" class="btn modal-btn edit">
+                                    <i class="fas fa-check-circle"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
             </div>
 
         </div>

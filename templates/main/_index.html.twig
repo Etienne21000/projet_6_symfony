@@ -1,0 +1,52 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Bienvenu sur le site Snowtricks{% endblock %}
+
+{% block header %}
+    <header class="main_header">
+        <div class="title-home">
+            <div class="wrapper-title">
+                <h1>{{ title }}</h1>
+                <p>{{ sub }}</p>
+            </div>
+        </div>
+        <div class="header-filter">
+            <div class="filter"></div>
+            <img src="upload/home_snow.jpeg" alt="img_header" class="header_img">
+        </div>
+        <div class="arrow-down">
+            <a href="#tricks"><i class="fas fa-arrow-down"></i></a>
+        </div>
+    </header>
+
+{% endblock %}
+
+        {% block content %}
+            {% for message in app.flashes('success') %}
+                <div class="alert alert-success">
+                    {{ message }}
+                </div>
+            {% endfor %}
+
+            <section class="container-tricks">
+                <article class="wrapper-tricks">
+                    <div class="row" id="tricks">
+                        {% for p in post %}
+                        <div class="tricks">
+                            {% for m in p.media %}
+                                {% if(m.ressource.status == 1 and m.ressource.type == 1) %}
+                                    <div class="img_filter">
+                                        <img src="{{ asset('/upload/' ~  m.link ) }}"/>
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                            <p>{{ p.title }}</p>
+{#                            <p>{{ p.content | slice(0, 100) }}</p>#}
+                            <p>{{ p.category }}</p>
+                            <a href="/figure/{{ p.Slug }}">Voir la figure</a>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </article>
+            </section>
+        {% endblock %}

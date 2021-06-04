@@ -2,14 +2,17 @@
 
 namespace App\Controller;
 
+use App\Entity\Comment;
 use App\Entity\Post;
 use App\Entity\Media;
 use App\Entity\Ressource;
+use App\Form\CommentType;
 use App\Repository\PostRepository;
 use App\Repository\MediaRepository;
 use App\Repository\CommentRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Security;
@@ -90,28 +93,39 @@ class MainController extends AbstractController
 
     /**
      * @Route("/back-office-snowtricks", name="back-office")
+     * @param Request $request
      * @return Response
      * @throws \Doctrine\ORM\NoResultException
      * @throws \Doctrine\ORM\NonUniqueResultException
      */
-    public function back_office(): Response
+    public function back_office(Request $request): Response
     {
         if ($this->security->isGranted('ROLE_USER')) {
 
+            $com = new Comment();
             $title = 'Bienvenu sur le back-office SnowTricks';
             $sub = 'Vous pouvez modérer les commentaires dans cette zone';
             $comments = $this->commentRepository->findAll();
+            $not_val = $this->commentRepository->findBy(['status' => 0]);
+            $val = $this->commentRepository->findBy(['status' => 1]);
             $total_com = $this->commentRepository->count_comments();
             $not_validated = $this->commentRepository->count_comments($status = 0);
             $validated = $this->commentRepository->count_comments($status = 1);
 
+            //$this->update_comment($id, $request);
+//            $form = $this->createForm(CommentType::class, $com);
+//            $form->handleRequest($request);
             return $this->render('back/back_office.html.twig', [
                 'title' => $title,
                 'sub' => $sub,
                 'total' => $total_com,
-                'not_validated' =>$not_validated,
+                'not_validated' => $not_validated,
                 'validated' => $validated,
                 'comments' => $comments,
+                'not_val' => $not_val,
+                'val' =>$val,
+                //'form' => $form->createView(),
+//                'single_com' => $singleCom,
             ]);
         } else {
            return $this->redirectToRoute('home');
