@@ -13,6 +13,9 @@ document.addEventListener('DOMContentLoaded', function(){
     let media_id = document.querySelector('.media_id');
     let btn_comment = document.querySelector('#add-com');
     let bloc_com = document.querySelector('.comment_user_granted');
+    let btn_delete = document.querySelector('.btn-delete');
+    let title = document.querySelector('.title_m');
+    let a_tag = document.querySelector('.delete-figure');
 
     function display_img_form(){
         if(image){
@@ -48,7 +51,6 @@ document.addEventListener('DOMContentLoaded', function(){
             let title_value = btn.dataset.title;
 
             btn.addEventListener('click', (e) => {
-                let title = document.querySelector('.title_m');
                 let img = document.querySelector('.link_m');
                 let inp_media = document.querySelector('.inp_media');
                 let form = document.querySelector('.delete_media');
@@ -95,6 +97,17 @@ document.addEventListener('DOMContentLoaded', function(){
             return false;
         }
     }
+
+    function delete_figure(){
+        btn_delete.addEventListener('click', (e) => {
+            let slug = btn_delete.dataset.slug;
+            modal_title.innerHTML = 'Etes-vous certain de vouloir supprimer cette figure ?';
+            title.innerHTML = 'Attention vous allez supprimer la figure '+slug;
+            a_tag.setAttribute('href', '/delete_figure/'+slug);
+        });
+    }
+
+    delete_figure();
     display_add_comment();
     get_media_id();
     display_img_form();

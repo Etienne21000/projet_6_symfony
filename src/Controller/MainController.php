@@ -67,10 +67,9 @@ class MainController extends AbstractController
      */
     public function index(): Response
     {
-        //$postRepository = $this->getDoctrine()->getRepository(Post::class);
         $post = $this->postrepository->findBy([
             'status' => 1,
-        ]);
+        ], ['category' => 'ASC']);
 
         foreach ($post as $p){
             $post_id = $p->getId();
@@ -102,7 +101,6 @@ class MainController extends AbstractController
     {
         if ($this->security->isGranted('ROLE_USER')) {
 
-            $com = new Comment();
             $title = 'Bienvenu sur le back-office SnowTricks';
             $sub = 'Vous pouvez modérer les commentaires dans cette zone';
             $comments = $this->commentRepository->findAll();
@@ -112,9 +110,6 @@ class MainController extends AbstractController
             $not_validated = $this->commentRepository->count_comments($status = 0);
             $validated = $this->commentRepository->count_comments($status = 1);
 
-            //$this->update_comment($id, $request);
-//            $form = $this->createForm(CommentType::class, $com);
-//            $form->handleRequest($request);
             return $this->render('back/back_office.html.twig', [
                 'title' => $title,
                 'sub' => $sub,
@@ -124,8 +119,6 @@ class MainController extends AbstractController
                 'comments' => $comments,
                 'not_val' => $not_val,
                 'val' =>$val,
-                //'form' => $form->createView(),
-//                'single_com' => $singleCom,
             ]);
         } else {
            return $this->redirectToRoute('home');

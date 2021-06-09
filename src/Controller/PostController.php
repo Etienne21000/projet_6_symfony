@@ -313,4 +313,17 @@ class PostController extends AbstractController
             'form' => $form->createView(),
         ]);
     }
+
+    /**
+     * @param $slug
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     * @Route("/delete_figure/{slug}", name="delete_figure")
+     */
+    public function delete_figure( string $slug ){
+        $post = $this->repository->findOneBy(['Slug' => $slug]);
+        $this->manager->remove($post);
+        $this->manager->flush();
+        $this->addFlash('success', 'La figure '.$post->getTitle().' à bien été supprimée');
+        return $this->redirectToRoute('home');
+    }
 }
