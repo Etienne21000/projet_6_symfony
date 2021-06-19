@@ -23,7 +23,7 @@ class Post
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, unique=true)
      * @Assert\Length(min = 2, minMessage = "Attention, le titre doit contenir au moins 2 caractères")
      * @Assert\NotBlank(message = "Attention, vous devez ajouter un titre")
      */
@@ -61,7 +61,7 @@ class Post
     private $category;
 
     /**
-     * @ORM\OneToMany(targetEntity=Media::class, mappedBy="post", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity=Media::class, mappedBy="post", cascade={"persist", "remove"})
      */
     private $media;
 
@@ -71,7 +71,7 @@ class Post
     private $Slug;
 
     /**
-     * @ORM\OneToMany(targetEntity=Comment::class, mappedBy="post")
+     * @ORM\OneToMany(targetEntity=Comment::class, mappedBy="post", cascade={"persist", "remove"})
      */
     private $comments;
 

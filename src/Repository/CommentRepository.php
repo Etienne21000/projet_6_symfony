@@ -25,9 +25,11 @@ class CommentRepository extends ServiceEntityRepository
     /**
      * @param int $id
      * @param int|null $status
+     * @param null $offset
+     * @param null $limit
      * @return array
      */
-    public function get_comments(int $id, int $status = null):array
+    public function get_comments(int $id, int $status = null, $offset = null, $limit = null):array
     {
         $db = $this->manager->createQueryBuilder();
         $db
@@ -35,15 +37,40 @@ class CommentRepository extends ServiceEntityRepository
             ->from('App\Entity\Comment', 'c')
             ->innerJoin('c.user', 'u')
             ->where('c.post_id = :id')
-            ->setParameter('id', $id);
+            ->setParameter('id', $id)
+            ->orderBy('c.creation_date', 'DESC');
 
         if($status !== null){
             $db->andWhere('c.status = '.$status);
         }
 
+        if($offset !== null && $limit !== null){
+            $db->setFirstResult($offset)
+                ->setMaxResults($limit);
+        }
+
         $resp = $db->getQuery();
 
         return $resp->execute();
+    }
+
+    /**
+     * @param int $id
+     * @return mixed
+     * @throws \Doctrine\ORM\NoResultException
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
+    public function count_comments_per_post(int $id){
+        $db = $this->manager->createQueryBuilder();
+        $db
+            ->select('count(c.id)')
+            ->from('App\Entity\Comment', 'c')
+            ->where('c.post_id = :id')
+            ->setParameter('id', $id);
+
+        $resp = $db->getQuery();
+
+        return $resp->getSingleScalarResult();
     }
 
     /**

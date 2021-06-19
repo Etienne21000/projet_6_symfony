@@ -32,3 +32,4 @@ services:
     App\Service\ImageUploader:
         arguments:
             $directory: '../public/upload/'
+

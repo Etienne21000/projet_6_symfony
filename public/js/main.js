@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', function(){
     let media_id = document.querySelector('.media_id');
     let btn_comment = document.querySelector('#add-com');
     let bloc_com = document.querySelector('.comment_user_granted');
-    let btn_delete = document.querySelector('.btn-delete');
+    let btn_delete = document.querySelectorAll('.btn-delete');
     let title = document.querySelector('.title_m');
     let a_tag = document.querySelector('.delete-figure');
 
@@ -99,12 +99,18 @@ document.addEventListener('DOMContentLoaded', function(){
     }
 
     function delete_figure(){
-        btn_delete.addEventListener('click', (e) => {
-            let slug = btn_delete.dataset.slug;
-            modal_title.innerHTML = 'Etes-vous certain de vouloir supprimer cette figure ?';
-            title.innerHTML = 'Attention vous allez supprimer la figure '+slug;
-            a_tag.setAttribute('href', '/delete_figure/'+slug);
+        btn_delete.forEach((btn) => {
+            btn.addEventListener('click', (e) => {
+                let slug = btn.dataset.slug;
+                modal_title.innerHTML = 'Etes-vous certain de vouloir supprimer cette figure ?';
+                title.innerHTML = 'Attention vous allez supprimer la figure '+slug;
+                a_tag.setAttribute('href', '/delete_figure/'+slug);
+            });
         });
+    }
+
+    function display_errors(){
+
     }
 
     delete_figure();

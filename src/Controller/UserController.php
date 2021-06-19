@@ -69,7 +69,7 @@ class UserController extends AbstractController
             $this->manager->persist($user);
             $this->manager->flush();
             $this->addFlash('success', 'Votre compte à bien été créé');
-            return $this->redirectToRoute('addUser');
+            return $this->redirectToRoute('app_login');
         }
 
         return $this->render('main/add_user_view.html.twig', [

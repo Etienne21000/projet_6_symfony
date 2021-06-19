@@ -21,6 +21,16 @@
         flex-direction: column;
         margin-bottom: 20px;
       }
+      ul{
+        list-style-type: none;
+        padding-left: 0;
+        li{
+          padding: 5px;
+          background-color: red;
+          color: #ffffff;
+          border-radius: 5px;
+        }
+      }
     }
   }
   .media_btn{

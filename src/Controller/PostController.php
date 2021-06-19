@@ -21,6 +21,7 @@ use App\Repository\PostRepository;
 use App\Service\ImageUploader;
 use Symfony\Component\Security\Core\Security;
 use App\Form\CommentType;
+use App\Service\Pagination;
 
 
 class PostController extends AbstractController
@@ -41,6 +42,8 @@ class PostController extends AbstractController
 
     private $commentRepository;
 
+    private $pagination;
+
     /**
      * PostController constructor.
      * @param PostRepository $post
@@ -48,14 +51,16 @@ class PostController extends AbstractController
      * @param CommentRepository $commentRepository
      * @param EntityManagerInterface $manager
      * @param Security $security
+     * @param Pagination $pagination
      */
-    public function __construct(PostRepository $post, MediaRepository $mediaRepository, CommentRepository $commentRepository, EntityManagerInterface $manager, Security $security)
+    public function __construct(PostRepository $post, MediaRepository $mediaRepository, CommentRepository $commentRepository, EntityManagerInterface $manager, Security $security, Pagination $pagination)
     {
         $this->manager = $manager;
         $this->repository = $post;
         $this->mediaRepository = $mediaRepository;
         $this->security = $security;
         $this->commentRepository = $commentRepository;
+        $this->pagination = $pagination;
     }
 
     /**
@@ -77,80 +82,87 @@ class PostController extends AbstractController
      */
     public function addPost(Request $request, ImageUploader $imageUploader){
 
-        $title = 'Ajouter une nouvelle figure';
-        $sub = 'Ajouter un trick en choisissant sa catégorie';
-        $action = 'create';
+        if ($this->security->isGranted('ROLE_USER')){
+            $title = 'Ajouter une nouvelle figure';
+            $sub = 'Ajouter un trick en choisissant sa catégorie';
+            $action = 'create';
 
-        $figure = new FigureRequest();
-        $post = new Post();
-        $media = new Media();
-        $ressource = new Ressource();
+            $figure = new FigureRequest();
+            $post = new Post();
+            $media = new Media();
+            $ressource = new Ressource();
 
-        $post->setCreationDate(new \DateTime('now'));
-        $media->setCreationDate(new \DateTime('now'));
+            $post->setCreationDate(new \DateTime('now'));
+            $media->setCreationDate(new \DateTime('now'));
 
-        $post->setUserId($this->getUser()->getId());
+            $post->setUserId($this->getUser()->getId());
 
-        $form = $this->createForm(PostType::class, $figure);
-        $form->handleRequest($request);
-        $link = $figure->mediaLink;
+            $form = $this->createForm(PostType::class, $figure);
+            $form->handleRequest($request);
+            $link = $figure->mediaLink;
 
-        if($form->isSubmitted() && $form->isValid()){
+            if($form->isSubmitted() && $form->isValid()){
 
-            $imageFile = $form->get('image')->getData();
+                $imageFile = $form->get('image')->getData();
 
-            $post
-                ->setTitle($figure->figureTitle)
-                ->setContent($figure->figureContent)
-                ->setStatus($figure->figureStatus)
-                ->setCategory($figure->figureCategory)
-                ->setSlug($post->getTitle());
+                $post
+                    ->setTitle($figure->figureTitle)
+                    ->setContent($figure->figureContent)
+                    ->setStatus($figure->figureStatus)
+                    ->setCategory($figure->figureCategory)
+                    ->setSlug($post->getTitle());
 
-            $this->manager->persist($post);
-            $this->manager->flush();
-
-            if($imageFile){
-                $fileName = $imageUploader->upload($imageFile);
-                $media->setPost($post);
-                $media->setPostId($post->getId());
-                $media->setPostSlug($post->getSlug());
-                $media->setLink($fileName);
-                $ressource->setType(1);
-            }
-            elseif($link) {
-                $media->setPost($post);
-                $media->setLink($figure->mediaLink);
-                $media->setPostId($post->getId());
-                $media->setPostSlug($post->getSlug());
-                $ressource->setType(2);
-            }
-
-            if($imageFile || $link){
-                $this->manager->persist($media);
+                $this->manager->persist($post);
                 $this->manager->flush();
 
-                $ressource
-                    ->setMedia($media)
-                    ->setMediaId($media->getId())
-                    ->setStatus(0);
+                if($imageFile){
+                    $fileName = $imageUploader->upload($imageFile);
+                    $media->setPost($post);
+                    $media->setPostId($post->getId());
+                    $media->setPostSlug($post->getSlug());
+                    $media->setLink($fileName);
+                    $ressource->setType(1);
+                }
+                elseif($link) {
+                    $media->setPost($post);
+                    $media->setLink($figure->mediaLink);
+                    $media->setPostId($post->getId());
+                    $media->setPostSlug($post->getSlug());
+                    $ressource->setType(2);
+                }
+
+                if($imageFile || $link){
+                    $this->manager->persist($media);
+                    $this->manager->flush();
+
+                    $ressource
+                        ->setMedia($media)
+                        ->setMediaId($media->getId())
+                        ->setStatus(0);
 
 
-                $this->manager->persist($ressource);
-                $this->manager->flush();
+                    $this->manager->persist($ressource);
+                    $this->manager->flush();
+                }
+
+                $this->addFlash('success', 'La figure à bien été ajoutée');
+                return $this->redirectToRoute('single_figure', [
+                    'slug' => $post->getSlug(),
+                ]);
             }
 
-            $this->addFlash('success', 'La figure à bien été ajoutée');
-            return $this->redirectToRoute('single_figure', [
-               'slug' => $post->getSlug(),
-            ]);
-        }
-
-        return $this->render('main/add_post_view.html.twig', [
+            return $this->render('main/add_post_view.html.twig', [
                 'title' => $title,
                 'sub' => $sub,
                 'form' => $form->createView(),
                 'action' => $action,
             ]);
+        }
+        else {
+            $this->addFlash('error', 'Attention, vous devez être connecté pour créer une figure');
+            return $this->redirectToRoute('app_login');
+        }
+
     }
 
     /**
@@ -264,21 +276,26 @@ class PostController extends AbstractController
     /**
      * @param string $slug
      * @param Request $request
+     * @param int $page
      * @return Response
-     * @Route("/figure/{slug}", name="single_figure")
-     * @throws \Exception
+     * @throws \Doctrine\ORM\NoResultException
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     * @Route("/figure/{slug}/{page<\d+>?1}", name="single_figure")
      */
-    public function get_one_figure(string $slug, Request $request)
+    public function get_one_figure(string $slug, Request $request, int $page)
     {
         $com = new Comment();
         $user = $this->getUser();
-        //$user_id = $this->getUser()->getId();
 
         $post = $this->repository->findOneBy([
             'Slug' => $slug,
         ]);
+
         $id = $post->getId();
-        $comments = $this->commentRepository->get_comments($id, $status = 1);
+
+        $count = $this->commentRepository->count_comments_per_post($id);
+        $paginate = $this->pagination->pagination($count, $request);
+        $comments = $this->commentRepository->get_comments($id, $status = 1, $paginate['first'], $paginate['perPage']);
         $medias = $this->mediaRepository->get_media($id, $status = null);
         $couv = $this->mediaRepository->get_media($id, $status = 1);
 
@@ -310,6 +327,8 @@ class PostController extends AbstractController
             'media' => $medias,
             'couv' => $couv,
             'comments' => $comments,
+            'pages' => $paginate['nbPages'],
+            'page' => $page,
             'form' => $form->createView(),
         ]);
     }

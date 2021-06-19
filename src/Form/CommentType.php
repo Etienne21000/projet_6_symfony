@@ -18,7 +18,7 @@ class CommentType extends AbstractType
         parent::buildForm($builder, $options);
 
         $builder
-            ->add('content', TextType::class, [
+            ->add('content', TextareaType::class, [
                 'label' => 'Votre commentaire',
             ])
             ->add('post_id', hiddenType::class)
