@@ -3,51 +3,92 @@
 {% block title %}Connexion SnowTtricks{% endblock %}
 
 {% block header %}
-    <header class="sub_header">
-        <div class="title">
-            <div class="wrapper">
-                <h1>{{ title }}</h1>
+    <header id="header" class="fixed-top header-transparent header-page">
+        <div class="container d-flex align-items-center">
+
+            <div class="logo mr-auto">
+                <h1 class="text-light"><a href="/"><span><i class="fas fa-mountain"></i> SnowTricks</span></a></h1>
             </div>
+            {% block nav %}
+                <nav class="nav-menu d-none d-lg-block">
+                    <ul>
+                        <li class="active"><a href="/">Accueil</a></li>
+                        {% if(app.user == null) %}
+                            <li><a href="/figures">Figures</a></li>
+                            <li><a href="/addUser">Inscription</a></li>
+                            <li><a href="/login">Connexion</a></li>
+                        {% else %}
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Figures
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                    <a class="dropdown-item" href="/addPost">Ajouter une figure</a>
+                                    <a class="dropdown-item" href="/figures">Toutes les figures</a>
+                                </div>
+                            </li>
+                            <li><a href="/">{{ app.user.username }}</a></li>
+                            <li><a href="/logout">Deconnexion</a></li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            {% endblock %}
         </div>
     </header>
-
 {% endblock %}
 
 {% block content %}
-    {% if error %}
-        <div class="alert alert-danger">
-            {{ error.messageKey|trans(error.messageData, 'security') }}
-        </div>
-    {% endif %}
+    <main id="main">
+        <section class="container">
+            {% if error %}
+                <div class="alert alert-danger">
+                    {{ error.messageKey|trans(error.messageData, 'security') }}
+                </div>
+            {% endif %}
 
-    {% for message in app.flashes('error') %}
-        <div class="alert alert-danger">
-            {{ message }}
-        </div>
-    {% endfor %}
+            {% for message in app.flashes('error') %}
+                <div class="alert alert-danger">
+                    {{ message }}
+                </div>
+            {% endfor %}
 
-    <div class="row">
-        <div class="col-sm-5">
-            <div class="well">
-                <form method="post">
-                    <fieldset>
-                        <legend><i class="fa fa-lock" aria-hidden="true"></i> {{ 'title.login'|trans }}</legend>
-                        <div class="form-group">
-                            <label for="email">Votre email</label>
-                            <input type="email" id="email" name="email" value="{{ last_username }}" class="form-control"/>
-                        </div>
-                        <div class="form-group">
-                            <label for="password">Votre mot de passe</label>
-                            <input type="password" id="password" name="password" class="form-control" />
-                        </div>
-                        <input type="hidden" name="_target_path" value="{{ app.request.get('/') }}"/>
-                        <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}"/>
-                        <button type="submit" class="btn btn-primary">
-                            <i class="fa fa-sign-in" aria-hidden="true"></i> connexion
-                        </button>
-                    </fieldset>
-                </form>
+            <div class="section-title" data-aos="fade-in" data-aos-delay="100">
+                <h2>Connexion à votre compte Snowtricks</h2>
             </div>
-        </div>
-    </div>
+
+            <form method="post">
+                {#                <fieldset>#}
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div>
+                                <label for="email">Votre email</label>
+                                <input type="email" id="email" name="email" value="{{ last_username }}" class="form-control"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div>
+                                <label for="password">Votre mot de passe</label>
+                                <input type="password" id="password" name="password" class="form-control" />
+                            </div>
+                        </div>
+                    </div>
+                    <input type="hidden" name="_target_path" value="{{ app.request.get('/') }}"/>
+                    <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}"/>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fa fa-sign-in" aria-hidden="true"></i> Connexion
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {#                </fieldset>#}
+            </form>
+        </section>
+    </main>
 {% endblock %}

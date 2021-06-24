@@ -13,16 +13,18 @@
           justify-content: flex-start;
           align-items: center;
             img{
-              width: 400px;
+              width: 380px;
               height: 250px;
-              margin-right: 30px;
+              margin-right: 15px;
+              margin-left: 15px;
               object-fit: cover;
           }
             iframe{
-              width: 400px;
+              width: 380px;
               height: 250px;
-              margin-right: 30px;
-              border: none;
+              margin-right: 15px;
+              margin-left: 15px;
+              object-fit: cover;
             }
 
       }

@@ -3,19 +3,34 @@
 {% block title %}Ajouter une figure{% endblock %}
 
 {% block header %}
-    <header class="sub_header">
-        <div class="title">
-            <div class="wrapper">
-                <h1>{{ title }}</h1>
-                <p>{{ sub }}</p>
+    <header id="header" class="fixed-top header-transparent header-page">
+        <div class="container d-flex align-items-center">
+
+            <div class="logo mr-auto">
+                <h1 class="text-light"><a href="/"><span><i class="fas fa-mountain"></i> SnowTricks</span></a></h1>
             </div>
+            {% block nav %}
+                <nav class="nav-menu d-none d-lg-block">
+                    <ul>
+                        <li class="active"><a href="/">Accueil</a></li>
+                        <li><a href="/figures">Figures</a></li>
+                        {% if(app.user == null) %}
+                            <li><a href="/addUser">Inscription</a></li>
+                            <li><a href="/login">Connexion</a></li>
+                        {% else %}
+                            <li><a href="/">{{ app.user.username }}</a></li>
+                            <li><a href="/addPost">Ajouter une figure</a></li>
+                            <li><a href="/logout">Deconnexion</a></li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            {% endblock %}
         </div>
     </header>
-
 {% endblock %}
 
 {% block content %}
-
+    <main id="main">
     {% for message in app.flashes('success') %}
         <div class="alert alert-success">
             {{ message }}
@@ -51,6 +66,18 @@
     </div>
 
     {% if action == 'edit' %}
+
+        <div class="section-title" data-aos="fade-in" data-aos-delay="100">
+            <h2> Mettre à jour la figure {{ post.title }}</h2>
+            <div class="row row-figure">
+                {% if post.editionDate %}
+                    <p>Dernière mise à jour le {{ post.editionDate | date("d/m/Y") }}</p>
+                {% else %}
+                    <p>Créé le {{ post.creationDate | date("d/m/Y") }} </p>
+                {% endif %}
+            </div>
+        </div>
+
         <section class="container">
             {{ form_start(form, {'attr': {'novalidate': 'novalidate' }}) }}
             <div class="form-group">
@@ -139,6 +166,10 @@
 
     {% elseif action == 'create' %}
 
+        <div class="section-title" data-aos="fade-in" data-aos-delay="100">
+            <h2> Ajouter une nouvelle figure</h2>
+        </div>
+
         <section class="container">
             {{ form_start(form, {'attr': {'novalidate': 'novalidate' }}) }}
             <div class="form-group">
@@ -199,5 +230,7 @@
         </section>
 
     {% endif %}
+
+    </main>
 
 {% endblock %}

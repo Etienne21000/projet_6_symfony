@@ -16,6 +16,9 @@ document.addEventListener('DOMContentLoaded', function(){
     let btn_delete = document.querySelectorAll('.btn-delete');
     let title = document.querySelector('.title_m');
     let a_tag = document.querySelector('.delete-figure');
+    let hero_head = document.querySelector('#hero');
+    let header = document.querySelector('#header');
+    let logo = document.querySelector('.logo a');
 
     function display_img_form(){
         if(image){
@@ -101,18 +104,33 @@ document.addEventListener('DOMContentLoaded', function(){
     function delete_figure(){
         btn_delete.forEach((btn) => {
             btn.addEventListener('click', (e) => {
+                let id = btn.dataset.id;
                 let slug = btn.dataset.slug;
                 modal_title.innerHTML = 'Etes-vous certain de vouloir supprimer cette figure ?';
                 title.innerHTML = 'Attention vous allez supprimer la figure '+slug;
-                a_tag.setAttribute('href', '/delete_figure/'+slug);
+                a_tag.setAttribute('href', '/delete_figure/'+id);
             });
         });
     }
 
-    function display_errors(){
+    function scroll_header(){
+        window.addEventListener('scroll', (e) => {
+            let Y = hero_head.scrollHeight;
+            let top = hero_head.scrollTop;
+            let client_height = Y - top;
 
+            if(window.scrollY > client_height){
+                console.log('On dépasse le header');
+                header.style.backgroundColor = '#ffffff';
+                logo.style.color = '#1c294e';
+            } else {
+                header.style.backgroundColor = 'transparent';
+                logo.style.color = '#ffffff';
+            }
+        });
     }
 
+    scroll_header();
     delete_figure();
     display_add_comment();
     get_media_id();

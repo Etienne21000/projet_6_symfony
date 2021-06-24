@@ -82,7 +82,6 @@ class MainController extends AbstractController
         $subtitle = 'Tricks de snowboard';
 
         return $this->render('main/index.html.twig', [
-            'controller_name' => 'MainController',
             'title' => $title,
             'sub' => $subtitle,
             'post' => $post,

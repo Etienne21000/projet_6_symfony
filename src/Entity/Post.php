@@ -11,7 +11,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * @ORM\Entity(repositoryClass=PostRepository::class)
- * @UniqueEntity(fields={"title"}, message= "Attention, cette figure existe déjà")
+ * @UniqueEntity(fields="title", message= "Attention, cette figure existe déjà")
  */
 class Post
 {
@@ -23,7 +23,7 @@ class Post
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255, unique=true)
+     * @ORM\Column(type="string", length=255)
      * @Assert\Length(min = 2, minMessage = "Attention, le titre doit contenir au moins 2 caractères")
      * @Assert\NotBlank(message = "Attention, vous devez ajouter un titre")
      */

@@ -12,6 +12,9 @@
   }
 }
 .form-group{
+  background-color: #1111;
+  padding-top: 30px;
+  border-radius: 10px;
   .row{
     align-items: center;
     justify-content: center;
@@ -20,6 +23,9 @@
         display: flex;
         flex-direction: column;
         margin-bottom: 20px;
+        .btn-primary{
+          width: 180px;
+        }
       }
       ul{
         list-style-type: none;

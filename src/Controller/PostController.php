@@ -105,6 +105,7 @@ class PostController extends AbstractController
 
                 $imageFile = $form->get('image')->getData();
 
+                $title = $figure->figureTitle;
                 $post
                     ->setTitle($figure->figureTitle)
                     ->setContent($figure->figureContent)
@@ -334,15 +335,41 @@ class PostController extends AbstractController
     }
 
     /**
-     * @param $slug
+     * @param $id
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
-     * @Route("/delete_figure/{slug}", name="delete_figure")
+     * @Route("/delete_figure/{id}", name="delete_figure")
      */
-    public function delete_figure( string $slug ){
-        $post = $this->repository->findOneBy(['Slug' => $slug]);
+    public function delete_figure( int $id ){
+        $post = $this->repository->findOneBy(['id' => $id]);
         $this->manager->remove($post);
         $this->manager->flush();
         $this->addFlash('success', 'La figure '.$post->getTitle().' à bien été supprimée');
         return $this->redirectToRoute('home');
+    }
+
+    /**
+     * @Route("/figures", name="figures")
+     */
+    public function get_all_figures(): Response
+    {
+        $title = 'Liste des figures de snowboard';
+        $subtitle = 'Tricks de snowboard';
+
+        $post = $this->repository->findBy([
+            'status' => 1,
+        ], ['category' => 'ASC']);
+
+        foreach ($post as $p){
+            $post_id = $p->getId();
+        }
+
+        $media = $this->mediaRepository->get_media($post_id);
+
+        return $this->render('main/all_figures.html.twig', [
+            'title' => $title,
+            'sub' => $subtitle,
+            'post' => $post,
+            'medias' => $media,
+        ]);
     }
 }

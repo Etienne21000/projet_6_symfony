@@ -1,28 +1,113 @@
 {% extends 'base.html.twig' %}
 
-{% block title %} Liste des figures par catégories {% endblock %}
+{% block title %} Liste des figures de snowboard {% endblock %}
 
 {% block header %}
-    <header class="main_header">
-        <div class="title-home">
-            <div class="wrapper-title">
-                <h1>Le {{ title }}</h1>
-                <p>Catergorie : {{ sub }}</p>
+    <header id="header" class="fixed-top header-transparent header-page">
+        <div class="container d-flex align-items-center">
+
+            <div class="logo mr-auto">
+                <h1 class="text-light"><a href="/"><span><i class="fas fa-mountain"></i> SnowTricks</span></a></h1>
             </div>
+            {% block nav %}
+                <nav class="nav-menu d-none d-lg-block">
+                    <ul>
+                        <li class="active"><a href="/">Accueil</a></li>
+                        {% if(app.user == null) %}
+                            <li><a href="/figures">Figures</a></li>
+                            <li><a href="/addUser">Inscription</a></li>
+                            <li><a href="/login">Connexion</a></li>
+                        {% else %}
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Figures
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                    <a class="dropdown-item" href="/addPost">Ajouter une figure</a>
+                                    <a class="dropdown-item" href="/figures">Toutes les figures</a>
+                                </div>
+                            </li>
+                            <li><a href="/">{{ app.user.username }}</a></li>
+                            <li><a href="/logout">Deconnexion</a></li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            {% endblock %}
         </div>
-        {#<div class="header-filter">
-            <div class="filter"></div>
-            {% for c in couv %}
-                <img src="{{ asset('/upload/' ~  c.link ) }}" class="header_img"/>
-            {% endfor %}
-        </div>#}
     </header>
 {% endblock %}
 
 {% block content %}
-            {% for message in app.flashes('success') %}
-                <div class="alert alert-success">
-                    {{ message }}
+    <main id="main">
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success">
+                {{ message }}
+            </div>
+        {% endfor %}
+        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel"></h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" name="media_id" value="" class="input_id">
+                        <p class="title_m"></p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <a href="" class=" btn btn-danger delete-figure">Supprimer</a>
+                    </div>
+
                 </div>
-            {% endfor %}
-{%  %}
+            </div>
+        </div>
+        <section id="services" class="services">
+            <div class="container" id="tricks">
+
+                <div class="section-title" data-aos="fade-in" data-aos-delay="100">
+                    <h2>Les figures par catégorie</h2>
+                </div>
+
+                <div class="row">
+                    <section class="container-tricks">
+                        <article class="wrapper-tricks">
+                            <div class="row" id="tricks">
+                                {% for p in post %}
+                                    <div class="tricks">
+                                        {% for m in p.media %}
+                                            {% if(m.ressource.status == 1 and m.ressource.type == 1) %}
+                                                <div class="img_filter">
+                                                    <img src="{{ asset('/upload/' ~  m.link ) }}"/>
+                                                </div>
+                                            {% endif %}
+                                        {% endfor %}
+                                        <div class="infos-trick">
+                                            <p class="trick-title">
+                                                <a href="/figure/{{ p.Slug }}">{{ p.title }}</a>
+                                            </p>
+                                            <span class="trick-span">Categorie : {{ p.category }}</span>
+                                            {% if(app.user is not null) %}
+                                                <div class="icons">
+                                                    <a href="/update_figure/{{ p.slug }}"><i class="fas fa-edit"></i></a>
+                                                    <button type="button" data-toggle="modal" data-target="#exampleModal" data-slug="{{ p.slug }}" data-action="delete" class="btn btn-delete">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </article>
+                    </section>
+                </div>
+
+            </div>
+        </section>
+    </main>
+{% endblock %}
