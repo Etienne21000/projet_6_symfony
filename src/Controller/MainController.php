@@ -98,7 +98,6 @@ class MainController extends AbstractController
      */
     public function back_office(Request $request): Response
     {
-        //if ($this->security->isGranted('ROLE_USER')) {
 
             $title = 'Bienvenu sur le back-office SnowTricks';
             $sub = 'Vous pouvez modérer les commentaires dans cette zone';
@@ -109,6 +108,7 @@ class MainController extends AbstractController
             $not_validated = $this->commentRepository->count_comments($status = 0);
             $validated = $this->commentRepository->count_comments($status = 1);
 
+        if ($this->security->isGranted('ROLE_ADMIN')) {
             return $this->render('back/back_office.html.twig', [
                 'title' => $title,
                 'sub' => $sub,
@@ -119,7 +119,7 @@ class MainController extends AbstractController
                 'not_val' => $not_val,
                 'val' =>$val,
             ]);
-        /*} else {
+        } /*else {
            return $this->redirectToRoute('home');
         }*/
     }

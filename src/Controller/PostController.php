@@ -36,12 +36,24 @@ class PostController extends AbstractController
      */
     private $repository;
 
+    /**
+     * @var MediaRepository
+     */
     private $mediaRepository;
 
+    /**
+     * @var Security
+     */
     private $security;
 
+    /**
+     * @var CommentRepository
+     */
     private $commentRepository;
 
+    /**
+     * @var Pagination
+     */
     private $pagination;
 
     /**
@@ -64,16 +76,6 @@ class PostController extends AbstractController
     }
 
     /**
-     * @Route("/post", name="post")
-     */
-    public function index(): Response
-    {
-        return $this->render('base.html.twig', [
-            'controller_name' => 'PostController',
-        ]);
-    }
-
-    /**
      * @param Request $request
      * @param ImageUploader $imageUploader
      * @return Response
@@ -81,89 +83,65 @@ class PostController extends AbstractController
      * @Route("/addPost", name="addPost")
      */
     public function addPost(Request $request, ImageUploader $imageUploader){
+        $title = 'Ajouter une nouvelle figure';
+        $sub = 'Ajouter un trick en choisissant sa catégorie';
+        $action = 'create';
+        $figure = new FigureRequest();
+        $post = new Post();
+        $media = new Media();
+        $ressource = new Ressource();
+        $post->setCreationDate(new \DateTime('now'));
+        $media->setCreationDate(new \DateTime('now'));
+        $post->setUserId($this->getUser()->getId());
+        $form = $this->createForm(PostType::class, $figure);
+        $form->handleRequest($request);
+        $link = $figure->mediaLink;
 
-        if ($this->security->isGranted('ROLE_USER')){
-            $title = 'Ajouter une nouvelle figure';
-            $sub = 'Ajouter un trick en choisissant sa catégorie';
-            $action = 'create';
-
-            $figure = new FigureRequest();
-            $post = new Post();
-            $media = new Media();
-            $ressource = new Ressource();
-
-            $post->setCreationDate(new \DateTime('now'));
-            $media->setCreationDate(new \DateTime('now'));
-
-            $post->setUserId($this->getUser()->getId());
-
-            $form = $this->createForm(PostType::class, $figure);
-            $form->handleRequest($request);
-            $link = $figure->mediaLink;
-
-            if($form->isSubmitted() && $form->isValid()){
-
-                $imageFile = $form->get('image')->getData();
-
-                $title = $figure->figureTitle;
-                $post
-                    ->setTitle($figure->figureTitle)
-                    ->setContent($figure->figureContent)
-                    ->setStatus($figure->figureStatus)
-                    ->setCategory($figure->figureCategory)
-                    ->setSlug($post->getTitle());
-
-                $this->manager->persist($post);
-                $this->manager->flush();
-
-                if($imageFile){
-                    $fileName = $imageUploader->upload($imageFile);
-                    $media->setPost($post);
-                    $media->setPostId($post->getId());
-                    $media->setPostSlug($post->getSlug());
-                    $media->setLink($fileName);
-                    $ressource->setType(1);
-                }
-                elseif($link) {
-                    $media->setPost($post);
-                    $media->setLink($figure->mediaLink);
-                    $media->setPostId($post->getId());
-                    $media->setPostSlug($post->getSlug());
-                    $ressource->setType(2);
-                }
-
-                if($imageFile || $link){
-                    $this->manager->persist($media);
-                    $this->manager->flush();
-
-                    $ressource
-                        ->setMedia($media)
-                        ->setMediaId($media->getId())
-                        ->setStatus(0);
-
-
-                    $this->manager->persist($ressource);
-                    $this->manager->flush();
-                }
-
-                $this->addFlash('success', 'La figure à bien été ajoutée');
-                return $this->redirectToRoute('single_figure', [
-                    'slug' => $post->getSlug(),
-                ]);
+        if($form->isSubmitted() && $form->isValid()){
+            $imageFile = $form->get('image')->getData();
+            $post
+                ->setTitle($figure->figureTitle)
+                ->setContent($figure->figureContent)
+                ->setStatus($figure->figureStatus)
+                ->setCategory($figure->figureCategory)
+                ->setSlug($post->getTitle());
+            $this->manager->persist($post);
+            $this->manager->flush();
+            if($imageFile){
+                $fileName = $imageUploader->upload($imageFile);
+                $media->setPost($post);
+                $media->setPostId($post->getId());
+                $media->setPostSlug($post->getSlug());
+                $media->setLink($fileName);
+                $ressource->setType(1);
+            } elseif($link) {
+                $media->setPost($post);
+                $media->setLink($figure->mediaLink);
+                $media->setPostId($post->getId());
+                $media->setPostSlug($post->getSlug());
+                $ressource->setType(2);
             }
-
-            return $this->render('main/add_post_view.html.twig', [
-                'title' => $title,
-                'sub' => $sub,
-                'form' => $form->createView(),
-                'action' => $action,
+            if($imageFile || $link){
+                $this->manager->persist($media);
+                $this->manager->flush();
+                $ressource
+                    ->setMedia($media)
+                    ->setMediaId($media->getId())
+                    ->setStatus(0);
+                $this->manager->persist($ressource);
+                $this->manager->flush();
+            }
+            $this->addFlash('success', 'La figure à bien été ajoutée');
+            return $this->redirectToRoute('single_figure', [
+                'slug' => $post->getSlug(),
             ]);
         }
-        else {
-            $this->addFlash('error', 'Attention, vous devez être connecté pour créer une figure');
-            return $this->redirectToRoute('app_login');
-        }
-
+        return $this->render('main/add_post_view.html.twig', [
+            'title' => $title,
+            'sub' => $sub,
+            'form' => $form->createView(),
+            'action' => $action,
+        ]);
     }
 
     /**
@@ -182,13 +160,11 @@ class PostController extends AbstractController
      * @param ImageUploader $imageUploader
      * @return Response
      * @throws \Exception
-     * @Route("update_figure/{slug}", name="update_figure")
+     * @Route("/update_figure/{slug}", name="update_figure")
      */
     public function update_trick($slug, Request $request, ImageUploader $imageUploader)
     {
-        if ($this->security->isGranted('ROLE_USER')){
-
-            $post = $this->find_signle($slug);
+        $post = $this->find_signle($slug);
         $id = $post->getId();
         $medias = $this->mediaRepository->get_media($id);
 
@@ -257,21 +233,16 @@ class PostController extends AbstractController
             ]);
         }
 
-            return $this->render('main/add_post_view.html.twig', [
-                'title' => $title,
-                'sub' => $sub,
-                'action' => $action,
-                'form' => $form->createView(),
-                'id' => $id,
-                'post' => $post,
-                'post_title' => $post->gettitle(),
-                'medias' => $medias,
-            ]);
-        } else {
-            $this->addFlash('error', 'Attention, vous devez être connecté pour modifier une figure');
-            return $this->redirectToRoute('app_login');
-        }
-
+        return $this->render('main/add_post_view.html.twig', [
+            'title' => $title,
+            'sub' => $sub,
+            'action' => $action,
+            'form' => $form->createView(),
+            'id' => $id,
+            'post' => $post,
+            'post_title' => $post->gettitle(),
+            'medias' => $medias,
+        ]);
     }
 
     /**
@@ -308,9 +279,9 @@ class PostController extends AbstractController
 
         if($form->isSubmitted() && $form->isValid()){
             $com->setCreationDate(new \DateTime('now'))
-            ->setStatus(0)
-            ->setPost($post)
-            ->setUser($user);
+                ->setStatus(0)
+                ->setPost($post)
+                ->setUser($user);
             $com = $form->getData();
 
             $this->manager->persist($com);
