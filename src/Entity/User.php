@@ -55,6 +55,7 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="array")
+     * @ORM\Column(type="json")
      */
     private $roles = [];
 
@@ -71,7 +72,7 @@ class User implements UserInterface
 
     public function __construct()
     {
-        $this->roles = array('ROLE_USER');
+        //$this->roles = array('ROLE_USER');
         $this->comments = new ArrayCollection();
         //$this->posts = new ArrayCollection();
     }
@@ -141,6 +142,7 @@ class User implements UserInterface
 
     public function getRoles(): array
     {
+        $roles = $this->roles;
         if (empty($roles)) {
             $roles[] = 'ROLE_USER';
         }

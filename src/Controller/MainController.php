@@ -98,7 +98,7 @@ class MainController extends AbstractController
      */
     public function back_office(Request $request): Response
     {
-        if ($this->security->isGranted('ROLE_USER')) {
+        //if ($this->security->isGranted('ROLE_USER')) {
 
             $title = 'Bienvenu sur le back-office SnowTricks';
             $sub = 'Vous pouvez modérer les commentaires dans cette zone';
@@ -119,8 +119,8 @@ class MainController extends AbstractController
                 'not_val' => $not_val,
                 'val' =>$val,
             ]);
-        } else {
+        /*} else {
            return $this->redirectToRoute('home');
-        }
+        }*/
     }
 }

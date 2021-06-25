@@ -49,6 +49,9 @@
                                 </div>
                             </li>
                             <li><a href="/">{{ app.user.username }}</a></li>
+                            {% if(is_granted('ROLE_ADMIN')) %}
+                                <li><a href="/home">{{ app.user.username }}</a></li>
+                            {% endif %}
                             <li><a href="/logout">Deconnexion</a></li>
                         {% endif %}
                     </ul>

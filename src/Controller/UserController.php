@@ -58,7 +58,7 @@ class UserController extends AbstractController
 
         $user = new User();
         $user->setCreationDate(new \DateTime('now'));
-        $user->setRoles(['ROLE_ADMIN']);
+        $user->setRoles(['ROLE_USER']);
 
         $form = $this->createForm(UserType::class, $user);
         $form->handleRequest($request);
