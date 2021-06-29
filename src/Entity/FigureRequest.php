@@ -2,9 +2,11 @@
 
 namespace App\Entity;
 
+use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 use App\Entity\Post;
+use App\Repository\PostRepository;
 
 /**
  * Class FigureRequest
@@ -83,4 +85,18 @@ class FigureRequest
      * @var integer
      */
     public $resStatus;
+
+   /* public function validate_title(){
+        $post = new Post;
+        $repository = new PostRepository();
+
+        $all = $repository->findAll();
+        foreach ($all as $title){
+            $resp_title = $title->getTitle();
+            if($resp_title = $this->figureTitle){
+                echo "Attention ce titre existe déjà";
+                exit();
+            }
+        }
+    }*/
 }
