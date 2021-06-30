@@ -20,7 +20,6 @@ class AppFixtures extends Fixture
     {
         $this->encodedPassword = $encodedPassword;
     }
-
     public function load(ObjectManager $manager)
     {
         $slugger = new AsciiSlugger();
