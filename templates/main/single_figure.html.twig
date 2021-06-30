@@ -35,8 +35,6 @@
                     </div>
                 </div>
 
-                <div class="row">
-                </div>
             </div>
         </section>
         <section class="portfolio-details">
@@ -53,7 +51,9 @@
                     </div>
                 </div>
             </div>
+            {% if(app.user) %}
             <a class="btn btn-primary" href="/update_figure/{{ post.Slug }}">Editer</a>
+            {% endif %}
         </section>
         <section class="comment-section">
             <div class="comments">
@@ -108,6 +108,7 @@
 
                         {% endfor %}
 
+                        {% if(comments|length > 0) %}
                         <nav aria-label="...">
                             <ul class="pagination">
                                 {% for p in 1..pages['page'] %}
@@ -122,6 +123,7 @@
                                 {% endfor %}
                             </ul>
                         </nav>
+                        {% endif %}
                     </div>
                 </div>
             </div>

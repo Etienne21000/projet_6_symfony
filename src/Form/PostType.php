@@ -26,13 +26,6 @@ class PostType extends AbstractType
                 'label' => 'Titre',
             ])
             ->add('figureContent', textAreaType::class, ['label' => 'Description'])
-            ->add('figureStatus', choiceType:: class, [
-                'choices' => [
-                    'Publier' => 1,
-                    'Brouillon' => 0
-                ],
-                'label' => 'Statut de la publication',
-            ])
             ->add('figureUserId', hiddenType::class)
             ->add('figureCategory', choiceType::class, [
                 'choices' => [

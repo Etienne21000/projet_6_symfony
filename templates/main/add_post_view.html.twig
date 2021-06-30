@@ -36,6 +36,11 @@
             {{ message }}
         </div>
     {% endfor %}
+        {% for message in app.flashes('error') %}
+            <div class="alert alert-danger">
+                {{ message }}
+            </div>
+        {% endfor %}
 
     <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
@@ -89,9 +94,6 @@
                 </div>
                 <div class="row">
                     <div class="col-md-6">{{ form_row(form.figureCategory, {'label': post.category}) }}</div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6">{{ form_row(form.figureStatus) }}</div>
                 </div>
                 <div class="row">
                     {{ form_row(form.figureUserId) }}
@@ -178,9 +180,6 @@
                 </div>
                 <div class="row">
                     <div class="col-md-6">{{ form_row(form.figureContent) }}</div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6">{{ form_row(form.figureStatus) }}</div>
                 </div>
                 <div class="row">
                     {{ form_row(form.figureUserId) }}

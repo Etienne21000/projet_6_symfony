@@ -99,24 +99,22 @@ class PostController extends AbstractController
         $post->setCreationDate(new \DateTime('now'));
         $media->setCreationDate(new \DateTime('now'));
         $post->setUserId($this->getUser()->getId());
+        $post->setStatus(1);
         $form = $this->createForm(PostType::class, $figure);
         $form->handleRequest($request);
         $link = $figure->mediaLink;
-
         $post_params = $this->repository->findAll();
-
         foreach ($post_params as $title){
             $resp = $title->getTitle();
             if($resp === $figure->figureTitle){
-                echo "Ce titre existe déjà";
-                exit();
+                $this->addFlash('error', 'Attention, ce titre existe déjà');
+                return $this->redirectToRoute('addPost');
             }
         }
-
         if($form->isSubmitted() && $form->isValid()){
             $imageFile = $form->get('image')->getData();
             $post
-                ->setTitle($figure->figureTitle)->setContent($figure->figureContent)->setStatus($figure->figureStatus)->setCategory($figure->figureCategory)->setSlug($post->getTitle());
+                ->setTitle($figure->figureTitle)->setContent($figure->figureContent)->setCategory($figure->figureCategory)->setSlug($post->getTitle());
             $this->manager->persist($post);
             $this->manager->flush();
             if($imageFile){
@@ -175,13 +173,25 @@ class PostController extends AbstractController
         $media = new Media();
         $ressource = new Ressource();
         $post->setEditionDate(new \DateTime('now'));
+        $post->setStatus(1);
         $media->setCreationDate(new \DateTime('now'));
         $form = $this->createForm(PostType::class, $figure);
         $form->handleRequest($request);
         $imageFile = $form->get('image')->getData();
         $link = $figure->mediaLink;
+
+        $post_params = $this->repository->findAll();
+        foreach ($post_params as $title){
+            $resp = $title->getTitle();
+            if($resp === $figure->figureTitle){
+                if($resp !== $post->getTitle()){
+                    $this->addFlash('error', 'Attention, ce titre existe déjà');
+                    return $this->redirectToRoute('update_figure', ['slug' => $post->getSlug(),]);
+                }
+            }
+        }
         if($form->isSubmitted() && $form->isValid()){
-            $post->setTitle($figure->figureTitle)->setContent($figure->figureContent)->setStatus($figure->figureStatus)->setCategory($figure->figureCategory)->setSlug($post->getTitle());
+            $post->setTitle($figure->figureTitle)->setContent($figure->figureContent)->setCategory($figure->figureCategory)->setSlug($post->getTitle());
             $this->manager->persist($post);
             $this->manager->flush();
             if($imageFile){

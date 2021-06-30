@@ -30,7 +30,7 @@ class Pagination
         $routeParameters = $request->attributes->get('_route_params');
         $page = (int)$routeParameters['page'];
 
-        $perPage = 2;
+        $perPage = 5;
 
         $first = ceil($page * $perPage) - $perPage;
         $pages = ceil($count / $perPage);
