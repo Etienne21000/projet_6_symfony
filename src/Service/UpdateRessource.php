@@ -2,14 +2,10 @@
 
 namespace App\Service;
 
-use App\Entity\Media;
-use App\Entity\Ressource;
 use App\Repository\MediaRepository;
 use App\Repository\PostRepository;
 use App\Repository\RessourceRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\HttpFoundation\File\Exception\FileException;
-use Symfony\Component\Routing\Annotation\Route;
 
 class UpdateRessource
 {

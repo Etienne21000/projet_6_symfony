@@ -120,7 +120,6 @@ document.addEventListener('DOMContentLoaded', function(){
             let client_height = Y - top;
 
             if(window.scrollY > client_height){
-                console.log('On dépasse le header');
                 header.style.backgroundColor = '#ffffff';
                 logo.style.color = '#1c294e';
             } else {
